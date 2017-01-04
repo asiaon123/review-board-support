@@ -3,7 +3,6 @@ package com.guyazhou.tools.plugin.reviewboard.http;
 import com.guyazhou.tools.plugin.reviewboard.service.MemoryFile;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class ClientHttpRequest {
     }
 
     /**
-     * 字符串写入一行
+     * 字符串写入并换行
      * @param str string
      * @throws IOException io
      */
@@ -230,5 +229,38 @@ public class ClientHttpRequest {
             setParameter(name, object.toString());
         }
     }
+
+    /**
+     * Add a parameter to the request
+     * if the value is a file, the file is uploaded. otherwise it is stringified and sent in the request.
+     * @param parameters "name-value" parameters
+     */
+    public void setParameters(Map<String, Object> parameters) throws IOException {
+        if (null == parameters) {
+            return;
+        }
+        for (Iterator iterator = parameters.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iterator.next();
+            setParameter(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void setParameters(Object[] objects) {
+
+    }
+
+    /**
+     * Post the requests to the server, with all the cookies and parameters added
+     * @return Input stream that the server response
+     * @throws IOException io
+     */
+    public InputStream post() throws IOException {
+        boundary();
+        write("--");
+        outputStream.close();
+        return urlConnection.getInputStream();
+    }
+
+
 
 }

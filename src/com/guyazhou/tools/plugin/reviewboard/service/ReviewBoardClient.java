@@ -1,7 +1,7 @@
 package com.guyazhou.tools.plugin.reviewboard.service;
 
 import com.google.gson.Gson;
-import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
+import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSettings;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ReviewBoardClient {
 
     public ReviewBoardClient() throws Exception {
-        String server = ReviewBoardSettings.getSettings().getState().getServer();
+        String server = ReviewBoardSettings.getSettings().getState().getServerURL();
         if (null == server || server.trim().isEmpty()) {
             Messages.showMessageDialog((Project) null, "Please set the review board server address in config panel!", "info", Messages.getInformationIcon());
             ShowSettingsUtil.getInstance().showSettingsDialog(null, ReviewBoardSettings.getSettingName());
@@ -95,7 +95,7 @@ public class ReviewBoardClient {
 
     public RepositoryResponse getRepositories() throws MalformedURLException {
         String path = "repositories/";
-        String json = new HttpClient().httpGet("");
+        //String json = new HttpClient().httpGet("");
         return null;
     }
 

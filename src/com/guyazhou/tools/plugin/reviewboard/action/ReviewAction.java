@@ -110,7 +110,7 @@ public class ReviewAction extends AnAction {
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);
                 Repository[] repositories;
-                repositories = reviewBoardClient.getRepositories();
+                //repositories = reviewBoardClient.getRepositories();
             }
         };
 

@@ -64,7 +64,7 @@ public class HttpClient {
         this.addCookie(httpURLConnection);
         httpURLConnection.setRequestMethod(method);
 
-
+        return null;
     }
 
     private void addCookie(URLConnection urlConnection) {
