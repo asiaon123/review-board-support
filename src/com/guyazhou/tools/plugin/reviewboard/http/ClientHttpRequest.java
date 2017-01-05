@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * Client http request
- * This class helps to send POST http requests with various form data, including files. And cookies can be added to the request.
+ * This class helps to send POST http requests with various forms data, including files. And cookies can be added to the request.
  * Created by Yakov on 2017/1/2.
  */
 public class ClientHttpRequest {
@@ -84,7 +84,7 @@ public class ClientHttpRequest {
     public ClientHttpRequest(URLConnection urlConnection) throws IOException {
         this.urlConnection = urlConnection;
         urlConnection.setDoOutput(true);
-        urlConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + "" );
+        urlConnection.setRequestProperty("Content-Type", "multipart/forms-data; boundary=" + "" );
     }
 
     /**
@@ -146,7 +146,7 @@ public class ClientHttpRequest {
 
     private void writeName(String name) throws IOException {
         newLine();
-        write("Content-Disposition: form-data; name=\"");
+        write("Content-Disposition: forms-data; name=\"");
         write(name.trim());
         write("\"");
     }

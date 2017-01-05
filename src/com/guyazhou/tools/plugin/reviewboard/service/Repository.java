@@ -65,25 +65,3 @@ public class Repository {
         this.mirror_path = mirror_path;
     }
 }
-
-class RepositoryResponse extends Repository {
-
-    private Repository[] repositories;
-    private Integer total_result;
-
-    public Repository[] getRepositories() {
-        return repositories;
-    }
-
-    public void setRepositories(Repository[] repositories) {
-        this.repositories = repositories;
-    }
-
-    public Integer getTotal_result() {
-        return total_result;
-    }
-
-    public void setTotal_result(Integer total_result) {
-        this.total_result = total_result;
-    }
-}

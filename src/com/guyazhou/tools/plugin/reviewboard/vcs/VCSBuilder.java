@@ -12,6 +12,11 @@ public interface VCSBuilder {
 
     AbstractVcs getVCS();
 
+    /**
+     * build
+     * @param project current project
+     * @param virtualFiles selected files
+     */
     void build(Project project, VirtualFile[] virtualFiles);
 
     String getDiff();

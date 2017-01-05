@@ -1,6 +1,7 @@
 package com.guyazhou.tools.plugin.reviewboard.service;
 
 import com.google.gson.Gson;
+import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
 import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSettings;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -8,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public class ReviewBoardClient {
 
+    private String apiURL;
+
     public ReviewBoardClient() throws Exception {
         String server = ReviewBoardSettings.getSettings().getState().getServerURL();
         if (null == server || server.trim().isEmpty()) {
@@ -27,6 +31,8 @@ public class ReviewBoardClient {
             ShowSettingsUtil.getInstance().showSettingsDialog(null, ReviewBoardSettings.getSettingName());
             throw new Exception("Please set the review board server address in config panel!");
         }
+
+        this.apiURL = server + "/api/";
 
     }
 
@@ -93,10 +99,12 @@ public class ReviewBoardClient {
         return "";
     }
 
-    public RepositoryResponse getRepositories() throws MalformedURLException {
-        String path = "repositories/";
-        //String json = new HttpClient().httpGet("");
-        return null;
+    public RepositoryResponse getRepositories() throws IOException {
+        String path = apiURL + "repositories/";
+        String json = new HttpClient().httpGet(path);
+        System.out.println(json);
+        Gson gson = new Gson();
+        return gson.fromJson(json, RepositoryResponse.class);
     }
 
 }

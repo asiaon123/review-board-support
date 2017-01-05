@@ -53,7 +53,7 @@ public class AbstractVCSBuilder implements VCSBuilder {
 
     @Override
     public void build(Project project, VirtualFile[] virtualFiles) {
-        this.getRepositotyRoot(project, virtualFiles);
+        getRepositotyRoot(project, virtualFiles);
         this.diff = this.generateDiff(project, virtualFiles);
     }
 

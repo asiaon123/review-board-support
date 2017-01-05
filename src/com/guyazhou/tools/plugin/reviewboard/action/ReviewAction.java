@@ -1,14 +1,18 @@
 package com.guyazhou.tools.plugin.reviewboard.action;
 
+import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
+import com.guyazhou.tools.plugin.reviewboard.service.Repository;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.tools.plugin.reviewboard.vcs.VCSBuilder;
 import com.guyazhou.tools.plugin.reviewboard.service.VCSBuilderFactory;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -18,8 +22,12 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.InvokeAfterUpdateMode;
 import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.xmlbeans.impl.common.Levenshtein;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.idea.svn.api.Repository;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 
 /**
  * Review action
@@ -27,7 +35,7 @@ import org.jetbrains.idea.svn.api.Repository;
  */
 public class ReviewAction extends AnAction {
 
-    String changeMessage;
+    private String changeMessage;
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -35,38 +43,34 @@ public class ReviewAction extends AnAction {
         // 要不要final修饰??
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
-        // 获取选择的文件列表
-        // 要不要final修饰??
+        // final修饰??
         VirtualFile[] virtualFiles = e.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
         if (null == virtualFiles || 0 == virtualFiles.length) {
-            Messages.showMessageDialog("没有文件需要review", "提醒", Messages.getWarningIcon());
+            Messages.showMessageDialog("Please select the files you want to review!", "Alert", Messages.getWarningIcon());
             return;
         }
 
-        // 获取文件所在VCS
         final AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
         System.out.println(abstractVcs.getName());  // svn, Git
-        // 检测是否所有更改的文件都在该VCS下
+        // verify selected files are under the same VCS.
         if (!ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles)) {
-            // TODO set action disabled
-            Messages.showWarningDialog("有些文件不在VCS管理下", "警告");
+            Messages.showWarningDialog("Some of the files are not under control of VCS!", "Alert");
+            return;
         }
 
-        // 当前项目文件变更列表管理器
         final ChangeListManager changeListManager = ChangeListManager.getInstance(project);
-        // 处理选取的文件
+        // for what??
         LocalChangeList localChangeList = null;
         for (VirtualFile virtualFile : virtualFiles) {
             localChangeList = changeListManager.getChangeList(virtualFile);
             if (null != localChangeList) {
-                System.out.println(localChangeList.getName());
-                changeMessage = localChangeList.getName();
+                changeMessage = localChangeList.getName();  // 选取的文件所在的 changeList name 如default
                 break;
             }
         }
+        // for what??
 
         changeListManager.invokeAfterUpdate(new Runnable() {
-
             @Override
             public void run() {
                 System.out.println("Executing...");
@@ -79,41 +83,133 @@ public class ReviewAction extends AnAction {
                     e.printStackTrace();
                 }
             }
-
         }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "刷新VCS", ModalityState.current());
-
 
     }
 
+    /**
+     * execute
+     * @param project current project
+     * @param vcsBuilder vcsBuilder
+     * @param virtualFiles selected files
+     * @throws Exception io
+     */
     private void execute(final Project project, final VCSBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
+
         vcsBuilder.build(project, virtualFiles);
+
         String diff = vcsBuilder.getDiff();
         if (null == diff) {
-            Messages.showMessageDialog(project, "No diff generated", "Warning", null);
+            Messages.showWarningDialog("No diff generated!", "Warining");
             return;
         }
 
         ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
-
-        Task.Backgroundable task = new Task.Backgroundable(project, "", false, new PerformInBackgroundOption() {
-            @Override
-            public boolean shouldStartInBackground() {
-                return false;
-            }
-
-            @Override
-            public void processSentToBackground() {
-
-            }
-        }) {
+        Task.Backgroundable task = new Task.Backgroundable(project, "Query Repository...", false, new PerformanceInBackgroundOption4VCS()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);
-                Repository[] repositories;
-                //repositories = reviewBoardClient.getRepositories();
+
+                Repository[] repositories = null;
+                try {
+                    repositories = reviewBoardClient.getRepositories().getRepositories();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (null != repositories) {
+                    Repository[] finalRepositories = repositories;
+                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            showPostForm(project, vcsBuilder, finalRepositories);
+                        }
+                    });
+                }
+
+            }
+        };
+        ProgressManager.getInstance().run(task);
+    }
+
+    /**
+     * Show post Form
+     * @param project current project
+     * @param vcsBuilder VCS builder
+     * @param finalRepositories repositories
+     */
+    private void showPostForm(Project project, VCSBuilder vcsBuilder, Repository[] finalRepositories) {
+
+        System.out.println("showPostForm...");
+
+        int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), finalRepositories);
+
+        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project, "haha", "what?", finalRepositories, possibleRepositoryIndex) {
+            @Override
+            protected void doOKAction() {
+                super.doOKAction();
             }
         };
 
+        submitDialogForm.show();
+
+    }
+
+    /**
+     * Get possible repository index
+     * @param repositoryURL repository URL
+     * @param finalRepositories repositories
+     * @return int
+     */
+    private int getPossibleRepositoryIndex(String repositoryURL, Repository[] finalRepositories) {
+
+        int possibleRepositoryIndex = -1;
+        for (int i=0; i<finalRepositories.length; i++) {
+            if ( repositoryURL.equals(finalRepositories[i].getMirror_path()) ) {
+                possibleRepositoryIndex = i;
+                break;
+            }
+        }
+
+        if (-1 == possibleRepositoryIndex) {
+            int i = repositoryURL.lastIndexOf('/');
+            if (i > -1) {
+                String shortName = repositoryURL.substring(i + 1);
+                for (int j=0; j < finalRepositories.length; j++) {
+                    if ( shortName.equals(finalRepositories[j].getName()) ) {
+                        possibleRepositoryIndex = j;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (-1 == possibleRepositoryIndex) {
+            if ( !repositoryURL.contains("//") ) {
+                repositoryURL = "//" + repositoryURL;
+            }
+            String path = URI.create(repositoryURL).getPath();
+            String[] repos = new String[finalRepositories.length];
+            for (int i=0; i<finalRepositories.length; i++) {
+                repos[i] = finalRepositories[i].getName();
+            }
+            possibleRepositoryIndex = -1;   // TODO to replace with LevenshteinDistance
+        }
+
+        return possibleRepositoryIndex;
+    }
+
+    private class PerformanceInBackgroundOption4VCS implements PerformInBackgroundOption {
+
+        @Override
+        public boolean shouldStartInBackground() {
+            return false;
+        }
+
+        @Override
+        public void processSentToBackground() {
+
+        }
     }
 
 }

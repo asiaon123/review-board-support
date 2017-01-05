@@ -33,7 +33,8 @@ public class HttpClient {
      * @throws IOException io
      */
     public String httpGet(String path) throws IOException {
-        URL url = new URL("");
+        System.out.println(path);
+        URL url = new URL(path);
 
         URLConnection urlConnection = url.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
