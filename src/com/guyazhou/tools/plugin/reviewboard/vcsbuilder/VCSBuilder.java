@@ -10,19 +10,35 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public interface VCSBuilder {
 
+    /**
+     * Get vcs
+     * @return vcs
+     */
     AbstractVcs getVCS();
 
     /**
-     * build
+     * Build basic info
      * @param project current project
      * @param virtualFiles selected files
      */
-    void build(Project project, VirtualFile[] virtualFiles);
+    void build(Project project, VirtualFile[] virtualFiles) throws Exception;
 
+    /**
+     * Get diff string
+     * @return diff string
+     */
     String getDiff();
 
+    /**
+     * get repository url
+     * @return repository url
+     */
     String getRepositoryURL();
 
-    String getBasePath();
+    /**
+     * Get working copy path
+     * @return working copy path in repository
+     */
+    String getWorkingCopyPathInRepository();
 
 }

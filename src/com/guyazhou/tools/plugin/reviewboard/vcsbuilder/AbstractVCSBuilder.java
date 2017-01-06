@@ -12,6 +12,7 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
+import git4idea.GitVcs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.svn.SvnUtil;
@@ -31,28 +32,39 @@ import java.util.List;
  * VCS抽象方法
  * Created by Yakov on 2016/12/30.
  */
-public class AbstractVCSBuilder implements VCSBuilder {
+public abstract class AbstractVCSBuilder implements VCSBuilder {
 
-    private AbstractVcs abstractVcs;
-    private String diff;
-    private String repositoryURL;
-    private String basePath;
-    private String workingCopyDir;
-    private List<Change> changeList;
+    protected AbstractVcs abstractVcs;
+    protected String diff;
+    protected String repositoryURL;
+    protected String workingCopyPathInRepository;
+    protected String workingCopyDir;
+    protected List<Change> changeList;
 
-    public AbstractVCSBuilder(AbstractVcs abstractVcs) {
+    /**
+     * Construction
+     * Set vcs
+     * @param abstractVcs vcs
+     */
+    protected AbstractVCSBuilder(AbstractVcs abstractVcs) {
         this.abstractVcs = abstractVcs;
     }
 
     @Override
     public AbstractVcs getVCS() {
-        return null;
+        return this.abstractVcs;
     }
 
+    /**
+     * Build
+     * Get repository root, and generate diff
+     * @param project current project
+     * @param virtualFiles selected files
+     */
     @Override
-    public void build(Project project, VirtualFile[] virtualFiles) {
-        getRepositotyRoot(project, virtualFiles);
-        this.diff = this.generateDiff(project, virtualFiles);
+    public void build(Project project, VirtualFile[] virtualFiles) throws Exception {
+        setRepositoryRootAndWorkingCopyPath(virtualFiles);
+        this.diff = generateDiff(project, virtualFiles);
     }
 
     @Override
@@ -66,77 +78,20 @@ public class AbstractVCSBuilder implements VCSBuilder {
     }
 
     @Override
-    public String getBasePath() {
-        return this.getBasePath();
+    public String getWorkingCopyPathInRepository() {
+        return this.workingCopyPathInRepository;
     }
 
     /**
-     * get the repository root of the project
-     * @param project current idea project
+     * Set repository root url and working copy path in repository according to the given selected virtual files
      * @param virtualFiles selected files
      */
-    private void getRepositotyRoot(Project project, VirtualFile[] virtualFiles) {
-        File localRootDir = null;
-        String remoteRootURL = null;
-        String repositoryURL = null;
-        for (VirtualFile virtualFile : virtualFiles) {
-            if (null != virtualFile) {
-                virtualFile.refresh(false, true);
-
-                // working copy root
-                File workingCopyRoot = SvnUtil.getWorkingCopyRoot(new File(virtualFile.getPath())); // 得到VCS的root
-                // 兼容v1.8
-                if (null == workingCopyRoot) {
-                    workingCopyRoot = SvnUtil.getWorkingCopyRootNew(new File(virtualFile.getPath()));
-                }
-                if(null == workingCopyRoot) {
-                    Messages.showErrorDialog("Cann't get working copy root of this file(s)!", "Error");
-                    return;
-                }
-                System.out.println("Working copy root:" + workingCopyRoot);
-                if (null == localRootDir) { // 值赋值一次??
-                    localRootDir = workingCopyRoot;
-                }
-                System.out.println("Local root dir(Working copy root) :" + localRootDir);
-
-                // remote root
-                SvnVcs svnVcs = (SvnVcs) abstractVcs;
-                SVNURL svnurl = SvnUtil.getUrl(svnVcs, workingCopyRoot);
-                if (null != svnurl && null == remoteRootURL) {
-                    remoteRootURL = svnurl.toString();
-                }
-                System.out.println("Remote root url:" + remoteRootURL);
-
-                SVNURL svnRepository = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
-                if (null != svnRepository && null == repositoryURL) {
-                    repositoryURL = svnRepository.toString();
-                }
-                System.out.println("Repository root:" + repositoryURL);
-
-            }
-        }
-
-        assert null != remoteRootURL;
-        assert null != repositoryURL;
-
-        // 截取得到远程仓库的相对路径
-        int i = remoteRootURL.indexOf(repositoryURL);
-        String basePathForReviewBoard;
-        if (-1 != i) {
-            basePathForReviewBoard = remoteRootURL.substring(i + repositoryURL.length());
-        } else {
-            basePathForReviewBoard = "";
-        }
-        this.repositoryURL = repositoryURL;
-        this.workingCopyDir = localRootDir.getPath();
-        this.basePath = basePathForReviewBoard;
-        System.out.println("basePath:" + basePath);
-    }
+    abstract void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception;
 
     /**
-     * 生成diff str
-     *
-     * @param project      current idea project
+     * TODO
+     * diff str
+     * @param project current idea project
      * @param virtualFiles selected files
      * @return different string
      */

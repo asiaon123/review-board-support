@@ -1,6 +1,7 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
 
 import com.intellij.openapi.vcs.AbstractVcs;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * Git builder
@@ -11,6 +12,11 @@ public class GitVCSBuilder extends AbstractVCSBuilder {
 
     public GitVCSBuilder(AbstractVcs abstractVcs) {
         super(abstractVcs);
+    }
+
+    @Override
+    void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) {
+
     }
 
 }

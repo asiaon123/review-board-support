@@ -26,6 +26,7 @@
   -->
     <!-- svn4idea -->
     <depends>Subversion</depends>
+    <depends>Git4Idea</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
