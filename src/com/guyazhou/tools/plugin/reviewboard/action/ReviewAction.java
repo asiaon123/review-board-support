@@ -3,8 +3,8 @@ package com.guyazhou.tools.plugin.reviewboard.action;
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
 import com.guyazhou.tools.plugin.reviewboard.service.Repository;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
-import com.guyazhou.tools.plugin.reviewboard.vcs.VCSBuilder;
-import com.guyazhou.tools.plugin.reviewboard.service.VCSBuilderFactory;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -22,11 +22,9 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.InvokeAfterUpdateMode;
 import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.apache.xmlbeans.impl.common.Levenshtein;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 
 /**
@@ -60,7 +58,7 @@ public class ReviewAction extends AnAction {
 
         final ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         // for what??
-        LocalChangeList localChangeList = null;
+        LocalChangeList localChangeList;
         for (VirtualFile virtualFile : virtualFiles) {
             localChangeList = changeListManager.getChangeList(virtualFile);
             if (null != localChangeList) {
@@ -73,14 +71,13 @@ public class ReviewAction extends AnAction {
         changeListManager.invokeAfterUpdate(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Executing...");
                 try {
                     VCSBuilder vcsBuilder = VCSBuilderFactory.getVCSBuilder(abstractVcs);
                     if (null != vcsBuilder) {
                         execute(project, vcsBuilder, virtualFiles);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Messages.showErrorDialog(e.getMessage(), "Error");
                 }
             }
         }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "刷新VCS", ModalityState.current());
@@ -88,7 +85,7 @@ public class ReviewAction extends AnAction {
     }
 
     /**
-     * execute
+     * Show form and submit to review board
      * @param project current project
      * @param vcsBuilder vcsBuilder
      * @param virtualFiles selected files

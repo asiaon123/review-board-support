@@ -1,4 +1,4 @@
-package com.guyazhou.tools.plugin.reviewboard.vcs;
+package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.AbstractVcs;
