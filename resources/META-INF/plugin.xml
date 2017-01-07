@@ -30,8 +30,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSettings" />
-      <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSettings" />
+    <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting" />
+      <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting" />
   </extensions>
 
   <actions>

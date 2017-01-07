@@ -2,7 +2,7 @@ package com.guyazhou.tools.plugin.reviewboard.service;
 
 import com.google.gson.Gson;
 import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
-import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSettings;
+import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -25,10 +25,10 @@ public class ReviewBoardClient {
     private String apiURL;
 
     public ReviewBoardClient() throws Exception {
-        String server = ReviewBoardSettings.getSettings().getState().getServerURL();
+        String server = ReviewBoardSetting.getInstance().getState().getServerURL();
         if (null == server || server.trim().isEmpty()) {
             Messages.showMessageDialog((Project) null, "Please set the review board server address in config panel!", "info", Messages.getInformationIcon());
-            ShowSettingsUtil.getInstance().showSettingsDialog(null, ReviewBoardSettings.getSettingName());
+            ShowSettingsUtil.getInstance().showSettingsDialog(null, ReviewBoardSetting.getSettingName());
             throw new Exception("Please set the review board server address in config panel!");
         }
 

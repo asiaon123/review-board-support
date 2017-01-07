@@ -94,11 +94,9 @@ public class ReviewAction extends AnAction {
     private void execute(final Project project, final VCSBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
 
         vcsBuilder.build(project, virtualFiles);
-
         String diff = vcsBuilder.getDiff();
         if (null == diff) {
-            Messages.showWarningDialog("No diff generated!", "Warining");
-            return;
+            throw new Exception("No difference detected!");
         }
 
         ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
