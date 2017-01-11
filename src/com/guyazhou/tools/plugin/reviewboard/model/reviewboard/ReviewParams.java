@@ -1,34 +1,87 @@
-package com.guyazhou.tools.plugin.reviewboard.service;
-
-import com.intellij.openapi.components.ServiceManager;
+package com.guyazhou.tools.plugin.reviewboard.model.reviewboard;
 
 /**
- * ReviewBoard settings
+ * Review post params
  * Created by Yakov on 2017/1/2.
  */
-public class ReviewSettings {
+public class ReviewParams {
 
-    private String server;
+    /**
+     * Server URL
+     */
+    private String serverURL;
+
+    /**
+     * Username
+     */
     private String username;
+
+    /**
+     * Password
+     */
     private String password;
+
+    /**
+     * Summary
+     */
     private String summary;
+
+    /**
+     * Description
+     */
     private String description;
+
+    /**
+     * Branch
+     */
     private String branch;
+
+    /**
+     * BugsClosed
+     */
     private String bugsClosed;
+
+    /**
+     * Group
+     */
     private String group;
+
+    /**
+     * Person
+     */
     private String person;
+
+    /**
+     * ReviewId
+     */
     private String reviewId;
+
+    /**
+     * SvnRoot
+     */
     private String svnRoot;
+
+    /**
+     * SvnBasePath
+     */
     private String svnBasePath;
+
+    /**
+     * Diff
+     */
     private String diff;
+
+    /**
+     * RepositoryId
+     */
     private String repositoryId;
 
-    public String getServer() {
-        return server;
+    public String getServerURL() {
+        return serverURL;
     }
 
-    public void setServer(String server) {
-        this.server = server;
+    public void setServerURL(String serverURL) {
+        this.serverURL = serverURL;
     }
 
     public String getUsername() {

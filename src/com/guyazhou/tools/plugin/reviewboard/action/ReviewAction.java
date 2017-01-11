@@ -1,21 +1,25 @@
 package com.guyazhou.tools.plugin.reviewboard.action;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
-import com.guyazhou.tools.plugin.reviewboard.service.Repository;
+import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository.Repository;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
+import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.ReviewParams;
+import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.util.PopupUtil;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
@@ -24,7 +28,6 @@ import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -98,113 +101,173 @@ public class ReviewAction extends AnAction {
         if (null == diff) {
             throw new Exception("No difference detected!");
         }
-
         ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
-        Task.Backgroundable task = new Task.Backgroundable(project, "Query Repository...", false, new PerformanceInBackgroundOption4VCS()) {
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-                indicator.setIndeterminate(true);
+        Repository[] repositories = reviewBoardClient.getRepositories().getRepositories();
+        if (null != repositories) {
+            showPostForm(project, vcsBuilder, repositories);
+        }
 
-                Repository[] repositories = null;
-                try {
-                    repositories = reviewBoardClient.getRepositories().getRepositories();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (null != repositories) {
-                    Repository[] finalRepositories = repositories;
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            showPostForm(project, vcsBuilder, finalRepositories);
-                        }
-                    });
-                }
-
-            }
-        };
-        ProgressManager.getInstance().run(task);
     }
 
     /**
      * Show post Form
      * @param project current project
      * @param vcsBuilder VCS builder
-     * @param finalRepositories repositories
+     * @param repositories repositories
      */
-    private void showPostForm(Project project, VCSBuilder vcsBuilder, Repository[] finalRepositories) {
+    private void showPostForm(Project project, VCSBuilder vcsBuilder, Repository[] repositories) {
 
-        System.out.println("showPostForm...");
+        int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), repositories);
 
-        int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), finalRepositories);
-
-        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project, "haha", "what?", finalRepositories, possibleRepositoryIndex) {
+        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project,
+                "haha",
+                "what?",
+                repositories,
+                possibleRepositoryIndex) {
             @Override
             protected void doOKAction() {
+
+                if (!isOKActionEnabled()) {
+                    return;
+                }
+
+                // ReviewParams
+                ReviewParams reviewParams = new ReviewParams();
+                if (!this.isNewRequest()) {
+                    reviewParams.setReviewId(this.getExistReviewId());
+                }
+                reviewParams.setSummary(this.getSummary());
+                reviewParams.setBranch(this.getBranch());
+                reviewParams.setBugsClosed(this.getBug());
+                reviewParams.setGroup(this.getGroups());
+                reviewParams.setPerson(this.getPeople());
+                reviewParams.setDescription(this.getDescription());
+                reviewParams.setRepositoryId( String.valueOf(this.getSelectedRepositoryId()) );
+
+                if (null == vcsBuilder.getWorkingCopyPathInRepository()) {
+                    reviewParams.setSvnBasePath("");
+                } else {
+                    reviewParams.setSvnBasePath(vcsBuilder.getWorkingCopyPathInRepository());
+                }
+                reviewParams.setSvnRoot(vcsBuilder.getRepositoryURL());
+
+                //if (null == diff)
+
+                this.addTextToHistory();
+
+                Task.Backgroundable submitTask = new Task.Backgroundable(project,
+                        "Submiting...",
+                        false,
+                        new PerformInBackgroundOption() {
+                            @Override
+                            public boolean shouldStartInBackground() {
+                                return false;
+                            }
+                            @Override
+                            public void processSentToBackground() {
+                            }
+                        }
+                ) {
+
+                    Boolean isSubmitSuccess = false;
+
+                    @Override
+                    public void onSuccess() {
+
+                        if (isSubmitSuccess) {
+                            // submit success, show review urls
+                            ReviewBoardSetting.State persistentState = ReviewBoardSetting.getInstance().getState();
+                            if (null == persistentState) {
+                                PopupUtil.showBalloonForActiveFrame("Review setting state is null, why?", MessageType.ERROR);
+                                return;
+                            }
+                            StringBuffer reviewURL = new StringBuffer(persistentState.getServerURL());
+                            reviewURL.append("/r");
+                            reviewURL.append(reviewParams.getReviewId());
+                            //reviewURL.append("/diff/");
+
+                            StringBuffer successInfoMsg = new StringBuffer();
+                            successInfoMsg.append("Congratulations! submit success.\r\n");
+                            successInfoMsg.append("the review URL is ");
+                            successInfoMsg.append(reviewURL.toString());
+                            successInfoMsg.append("\r\n");
+                            successInfoMsg.append("Jump to the review page now?");
+
+                            int selectedValue = Messages.showYesNoDialog(successInfoMsg.toString(),
+                                    "Submit Success",
+                                    "Jump now",
+                                    "No",
+                                    Messages.getInformationIcon());
+                            if (Messages.YES == selectedValue) {
+                                BrowserUtil.browse(reviewURL.toString());
+                            }
+
+                        } else {
+                            PopupUtil.showBalloonForActiveFrame("what error message to show?", MessageType.ERROR);
+                        }
+
+                    }
+
+                    @Override
+                    public void run(@NotNull ProgressIndicator indicator) {
+                        indicator.setIndeterminate(true);
+                        try {
+                            isSubmitSuccess = ReviewBoardClient.submitReview(reviewParams, indicator);
+                        } catch (Exception e) {
+                            PopupUtil.showBalloonForActiveFrame(e.getMessage(), MessageType.ERROR);
+                        }
+                    }
+
+                };
+                ProgressManager.getInstance().run(submitTask);
                 super.doOKAction();
             }
         };
-
         submitDialogForm.show();
-
     }
 
     /**
-     * Get possible repository index
+     * Get possible repository index from reviewboard repositories
      * @param repositoryURL repository URL
-     * @param finalRepositories repositories
+     * @param repositories repositories
      * @return int
      */
-    private int getPossibleRepositoryIndex(String repositoryURL, Repository[] finalRepositories) {
+    private int getPossibleRepositoryIndex(String repositoryURL, Repository[] repositories) {
 
         int possibleRepositoryIndex = -1;
-        for (int i=0; i<finalRepositories.length; i++) {
-            if ( repositoryURL.equals(finalRepositories[i].getMirror_path()) ) {
+        // try path
+        for (int i=0; i<repositories.length; i++) {
+            if ( repositoryURL.equals(repositories[i].getPath()) ) {
                 possibleRepositoryIndex = i;
                 break;
             }
         }
-
+        // try name(http://example/svn/{repoName})  // TODO reslove repositoryURL format
         if (-1 == possibleRepositoryIndex) {
             int i = repositoryURL.lastIndexOf('/');
             if (i > -1) {
                 String shortName = repositoryURL.substring(i + 1);
-                for (int j=0; j < finalRepositories.length; j++) {
-                    if ( shortName.equals(finalRepositories[j].getName()) ) {
+                for (int j=0; j < repositories.length; j++) {
+                    if ( shortName.equals(repositories[j].getName()) ) {
                         possibleRepositoryIndex = j;
                         break;
                     }
                 }
             }
         }
-
+        // try relevance
         if (-1 == possibleRepositoryIndex) {
             if ( !repositoryURL.contains("//") ) {
                 repositoryURL = "//" + repositoryURL;
             }
             String path = URI.create(repositoryURL).getPath();
-            String[] repos = new String[finalRepositories.length];
-            for (int i=0; i<finalRepositories.length; i++) {
-                repos[i] = finalRepositories[i].getName();
+            String[] repos = new String[repositories.length];
+            for (int i=0; i<repositories.length; i++) {
+                repos[i] = repositories[i].getName();
             }
             possibleRepositoryIndex = -1;   // TODO to replace with LevenshteinDistance
         }
-
         return possibleRepositoryIndex;
-    }
-
-    private class PerformanceInBackgroundOption4VCS implements PerformInBackgroundOption {
-
-        @Override
-        public boolean shouldStartInBackground() {
-            return false;
-        }
-
-        @Override
-        public void processSentToBackground() {
-
-        }
     }
 
 }

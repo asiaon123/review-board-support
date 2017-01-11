@@ -32,7 +32,7 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
     }
 
     /**
-     * 获取idea setting中插件配置信息
+     * Get a instance of the persistent reviewboard setting
      * @return A configured ReviewBoardSetting instance
      */
     public static ReviewBoardSetting getInstance() {
@@ -40,14 +40,17 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
     }
 
     /**
-     * 内部类 State
+     * Inner class, for persistent state of reviewboard setting info
      */
     public static class State {
+
         private String serverURL;
         private String username;
         private String password;
         private String groups;
         private String people;
+        private String companionUsername;
+        private String companionPassword;
 
         public String getServerURL() {
             return serverURL;
@@ -78,6 +81,22 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
         }
         public void setPeople(String people) {
             this.people = people;
+        }
+
+        public String getCompanionUsername() {
+            return companionUsername;
+        }
+
+        public void setCompanionUsername(String companionUsername) {
+            this.companionUsername = companionUsername;
+        }
+
+        public String getCompanionPassword() {
+            return companionPassword;
+        }
+
+        public void setCompanionPassword(String companionPassword) {
+            this.companionPassword = companionPassword;
         }
     }
 
@@ -126,13 +145,17 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
                     | !"".equals(reviewBoardSettingForm.getUsername())
                     | !"".equals(reviewBoardSettingForm.getPassword())
                     | !"".equals(reviewBoardSettingForm.getGroups())
-                    | !"".equals(reviewBoardSettingForm.getPeople());
+                    | !"".equals(reviewBoardSettingForm.getPeople())
+                    | !"".equals(reviewBoardSettingForm.getCompanionUsername())
+                    | !"".equals(reviewBoardSettingForm.getCompanionPassword());
         } else {
             return !persistentState.getServerURL().equals(reviewBoardSettingForm.getServerURL())
                     | !persistentState.getUsername().equals(reviewBoardSettingForm.getUsername())
                     | !persistentState.getPassword().equals(reviewBoardSettingForm.getPassword())
                     | !persistentState.getGroups().equals(reviewBoardSettingForm.getGroups())
-                    | !persistentState.getPeople().equals(reviewBoardSettingForm.getPeople());
+                    | !persistentState.getPeople().equals(reviewBoardSettingForm.getPeople())
+                    | !persistentState.getCompanionUsername().equals(reviewBoardSettingForm.getCompanionUsername())
+                    | !persistentState.getCompanionPassword().equals(reviewBoardSettingForm.getCompanionPassword());
         }
     }
 
@@ -148,6 +171,8 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
         persistentState.setPassword(reviewBoardSettingForm.getPassword());
         persistentState.setGroups(reviewBoardSettingForm.getGroups());
         persistentState.setPeople(reviewBoardSettingForm.getPeople());
+        persistentState.setCompanionUsername(reviewBoardSettingForm.getCompanionUsername());
+        persistentState.setCompanionPassword(reviewBoardSettingForm.getCompanionPassword());
     }
 
     @SuppressWarnings("Duplicates")
@@ -162,6 +187,8 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
         reviewBoardSettingForm.setPassword(persistentState.getPassword());
         reviewBoardSettingForm.setGroups(persistentState.getGroups());
         reviewBoardSettingForm.setPeople(persistentState.getPeople());
+        reviewBoardSettingForm.setCompanionUsername(persistentState.getCompanionUsername());
+        reviewBoardSettingForm.setCompanionPassword(persistentState.getCompanionPassword());
     }
 
 }

@@ -1,8 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.forms;
 
-import com.guyazhou.tools.plugin.reviewboard.service.ReviewSettings;
-import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting;
-import com.intellij.ide.passwordSafe.PasswordSafe;
+import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
 import com.intellij.openapi.ui.Messages;
 
 import javax.swing.*;
@@ -22,32 +20,57 @@ public class ReviewBoardSettingForm {
     private JButton testLoginButton;
     private JTextField groupsField;
     private JTextField peopleField;
-    private JTextPane exampleHttpReviewExampleTextPane;
-    private JTextPane exampleUserTextPane;
-    private JTextPane examplePasswordTextPane;
-    private JTextPane exampleGroup1Group2TextPane;
-    private JTextPane examplePerson1Person2TextPane;
+    private JTextPane exampleServerURL;
+    private JTextPane exampleUsername;
+    private JTextPane examplePassword;
+    private JTextPane exampleGroups;
+    private JTextPane examplePeople;
+    private JPanel AttributesPanel;
+    private JPanel companionPanel;
+    private JTextField companionUsernameField;
+    private JPasswordField companionPasswordField;
+    private JButton companionTestLoginButton;
+    private JLabel companionUsernameLabel;
+    private JLabel companionPasswordLabel;
+    private JPanel basicPanel;
 
     {
         testLoginButton.addActionListener(new ActionListener() {
             @Override
+            public void actionPerformed(ActionEvent event) {
+                testLogin(getUsername(), getPassword());
+            }
+        });
+        companionTestLoginButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                String serverURL = getServerURL();
-                String username = getUsername();
-                String password = getPassword();
-                if(null == serverURL || null == username || null == password
-                        || "".equals(serverURL) || "".equals(username) || "".equals(password)) {
-                    Messages.showWarningDialog("Some fields are empty, please input!", "Warning");
-                }
+                testLogin(getCompanionUsername(), getCompanionPassword());
             }
         });
     }
 
-    public boolean isBasicInfoComplete() {
+    /**
+     * Test login in review board server
+     * @param username username
+     * @param password password
+     */
+    private void testLogin(String username, String password) {
         String serverURL = getServerURL();
-        String username = getUsername();
-        String password = getPassword();
-        return !("".equals(serverURL) || "".equals(username) || "".equals(password));
+        if (null == serverURL || "".equals(serverURL)) {
+            Messages.showWarningDialog("Server URL is empty!", "Warning");
+            return;
+        }
+        if(null == username || null == password
+                || "".equals(username) || "".equals(password)) {
+            Messages.showWarningDialog("Username or password is empty, please input!", "Warning");
+            return;
+        }
+        try {
+            String response = ReviewBoardClient.login(serverURL, username, password);
+            System.out.println(response);
+        } catch (Exception e) {
+            Messages.showErrorDialog(e.getMessage(), "Error");
+        }
     }
 
     public JPanel getReviewBoardSettingPanel() {
@@ -71,7 +94,7 @@ public class ReviewBoardSettingForm {
     }
 
     public String getPassword() {
-        //String serializePassword = PasswordSafe.getInstance().getPassword(ReviewSettings.class, ReviewBoardSetting.getPasswordKeyName());
+        //String serializePassword = PasswordSafe.getInstance().getPassword(ReviewParams.class, ReviewBoardSetting.getPasswordKeyName());
         return String.valueOf( this.passwordFiled.getPassword() );
     }
 
@@ -93,6 +116,22 @@ public class ReviewBoardSettingForm {
 
     public void setPeople(String people) {
         this.peopleField.setText(people);
+    }
+
+    public String getCompanionUsername() {
+        return this.companionUsernameField.getText().trim();
+    }
+
+    public void setCompanionUsername(String companionUsername) {
+        this.companionUsernameField.setText(companionUsername);
+    }
+
+    public String getCompanionPassword() {
+        return String.valueOf( this.companionPasswordField.getPassword() );
+    }
+
+    public void setCompanionPassword(String companionPassword) {
+        this.companionPasswordField.setText(companionPassword);
     }
 
 }

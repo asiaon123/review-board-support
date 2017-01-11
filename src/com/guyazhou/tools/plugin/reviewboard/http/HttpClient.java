@@ -35,7 +35,6 @@ public class HttpClient {
     public String httpGet(String path) throws IOException {
         System.out.println(path);
         URL url = new URL(path);
-
         URLConnection urlConnection = url.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
         this.addCookie(httpURLConnection);

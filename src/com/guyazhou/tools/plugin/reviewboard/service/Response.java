@@ -6,34 +6,34 @@ package com.guyazhou.tools.plugin.reviewboard.service;
  */
 public class Response {
 
-    private static final Response OK = new Response("OK");
-    private static final Response ERROR = new Response("ERROR");
+    private static final Response OK = new Response("ok");
+    private static final Response ERROR = new Response("error");
 
-    private String responseStatus;
-    private String errorMsg;
+    private String stat;
+    private String err;
 
     public Response() {
 
     }
 
-    public Response(String responseState) {
-        this.responseStatus = responseState;
+    public Response(String stat) {
+        this.stat = stat;
     }
 
-    public Response(String responseStatus, String errorMsg) {
-        this.responseStatus = responseStatus;
-        this.errorMsg = errorMsg;
+    public Response(String responseStatus, String err) {
+        this.stat = responseStatus;
+        this.err = err;
     }
 
     public boolean isOK() {
-        return "OK".equals(this.responseStatus);
+        return "ok".equals(this.stat);
     }
 
     public String getResponseStatus() {
-        return responseStatus;
+        return stat;
     }
 
     public String getErrorMsg() {
-        return errorMsg;
+        return err;
     }
 }

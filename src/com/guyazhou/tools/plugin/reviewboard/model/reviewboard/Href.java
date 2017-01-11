@@ -1,11 +1,20 @@
-package com.guyazhou.tools.plugin.reviewboard.service;
+package com.guyazhou.tools.plugin.reviewboard.model.reviewboard;
 
 /**
- * Href
+ * Review Board Href
  * Created by Yakov on 2017/1/2.
  */
 public class Href {
+
+    /**
+     * Repository link href
+     */
     private String href;
+
+    /**
+     * Repositoty link method
+     * GET, PUT, POST, DELETE
+     */
     private String method;
 
     public String getHref() {
