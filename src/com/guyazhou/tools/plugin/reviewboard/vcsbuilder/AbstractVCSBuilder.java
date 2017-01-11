@@ -12,14 +12,9 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
-import git4idea.GitVcs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.svn.SvnUtil;
-import org.jetbrains.idea.svn.SvnVcs;
-import org.tmatesoft.svn.core.SVNURL;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -86,7 +81,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * Set repository root url and working copy path in repository according to the given selected virtual files
      * @param virtualFiles selected files
      */
-    abstract void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception;
+    protected abstract void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception;
 
     /**
      * TODO

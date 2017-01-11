@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
 import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.ReviewParams;
 import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository.RepositoryResponse;
-import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting;
+import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.intellij.openapi.progress.ProgressIndicator;
 
 import java.io.BufferedReader;
@@ -151,7 +151,7 @@ public class ReviewBoardClient {
         String path = apiURL + "repositories/";
         String json;
         try {
-            json = new HttpClient().httpGet(path);
+            json = new HttpClient().get(path);
         } catch (Exception e) {
             throw new Exception("Get repositories fails");
         }

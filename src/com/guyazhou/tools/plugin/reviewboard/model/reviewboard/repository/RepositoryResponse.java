@@ -1,6 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository;
 
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.Href;
+import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.Link;
 
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class RepositoryResponse {
      * self (GET, http://10.200.2.68/api/repositories/)
      * create (POST, http://10.200.2.68/api/repositories/)
      */
-    private Map<String, Href> links;
+    private Map<String, Link> links;
 
     public String getStat() {
         return stat;
@@ -57,11 +57,11 @@ public class RepositoryResponse {
         this.total_result = total_result;
     }
 
-    public Map<String, Href> getLinks() {
+    public Map<String, Link> getLinks() {
         return links;
     }
 
-    public void setLinks(Map<String, Href> links) {
+    public void setLinks(Map<String, Link> links) {
         this.links = links;
     }
 }

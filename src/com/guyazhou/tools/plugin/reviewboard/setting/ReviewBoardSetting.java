@@ -1,20 +1,17 @@
-package com.guyazhou.tools.plugin.reviewboard.settings;
+package com.guyazhou.tools.plugin.reviewboard.setting;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.ReviewBoardSettingForm;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.apache.batik.xml.XMLUtilities;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
- * ReviewBoard settings
+ * ReviewBoard setting
  * Created by Yakov on 2017/1/2.
  */
 @State(

@@ -4,7 +4,7 @@ import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
 import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository.Repository;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.ReviewParams;
-import com.guyazhou.tools.plugin.reviewboard.settings.ReviewBoardSetting;
+import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
 import com.intellij.ide.BrowserUtil;

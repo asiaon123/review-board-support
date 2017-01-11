@@ -1,5 +1,7 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
 
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.git.GitVCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn.SVNVCSBuilder;
 import com.intellij.openapi.vcs.AbstractVcs;
 
 import java.lang.reflect.Constructor;

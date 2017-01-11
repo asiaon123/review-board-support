@@ -1,5 +1,6 @@
-package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
+package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn;
 
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.idea.svn.SvnUtil;
@@ -9,7 +10,7 @@ import org.tmatesoft.svn.core.SVNURL;
 import java.io.File;
 
 /**
- * SVN builder
+ * svn builder
  * Created by Yakov on 2016/12/28.
  */
 public class SVNVCSBuilder extends AbstractVCSBuilder {
@@ -20,11 +21,11 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
     }
 
     /**
-     * Set repository root url and working copy path in repository according to the given selected virtual files in SVN
+     * Set repository root url and working copy path in repository according to the given selected virtual files in svn
      * @param virtualFiles selected files
      */
     @Override
-    void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception {
+    protected void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception {
 
         /*
          * INFO

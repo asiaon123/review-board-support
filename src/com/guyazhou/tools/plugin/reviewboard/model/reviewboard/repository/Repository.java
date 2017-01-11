@@ -1,6 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository;
 
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.Href;
+import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.Link;
 
 import java.util.Map;
 
@@ -24,7 +24,7 @@ public class Repository {
      * Repository links
      * info, branches, commits, self, update, diff_file_attachments, delete
      */
-    private Map<String, Href> links;
+    private Map<String, Link> links;
 
     /**
      * Repository mirror_path ?
@@ -67,11 +67,11 @@ public class Repository {
         this.name = name;
     }
 
-    public Map<String, Href> getLinks() {
+    public Map<String, Link> getLinks() {
         return links;
     }
 
-    public void setLinks(Map<String, Href> links) {
+    public void setLinks(Map<String, Link> links) {
         this.links = links;
     }
 

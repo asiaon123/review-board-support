@@ -1,10 +1,10 @@
 package com.guyazhou.tools.plugin.reviewboard.model.reviewboard;
 
 /**
- * Review Board Href
+ * Review Board Link
  * Created by Yakov on 2017/1/2.
  */
-public class Href {
+public class Link {
 
     /**
      * Repository link href
@@ -35,7 +35,7 @@ public class Href {
 
     @Override
     public String toString() {
-        return "Href{" +
+        return "Link{" +
                 "href='" + href + '\'' +
                 ", method='" + method + '\'' +
                 '}';
