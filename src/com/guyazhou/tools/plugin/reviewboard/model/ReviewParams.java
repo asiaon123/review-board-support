@@ -1,4 +1,4 @@
-package com.guyazhou.tools.plugin.reviewboard.model.reviewboard;
+package com.guyazhou.tools.plugin.reviewboard.model;
 
 /**
  * Review post params

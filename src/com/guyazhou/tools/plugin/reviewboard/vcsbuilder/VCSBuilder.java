@@ -27,7 +27,7 @@ public interface VCSBuilder {
      * Get diff string
      * @return diff string
      */
-    String getDiff();
+    String getDifferences();
 
     /**
      * get repository url

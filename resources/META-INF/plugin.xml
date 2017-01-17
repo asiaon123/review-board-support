@@ -2,44 +2,43 @@
   <id>com.guyazhou.tools.plugin.reviewboard4intellij</id>
   <name>Reviewboard plugin for intelliJ</name>
   <version>1.0</version>
-  <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">guyazhou.com</vendor>
+  <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">www.guyazhou.com</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      A reviewboard plugin for intelliJ idea, helping post review to reviewboard server.
+      <br>
+      Issues: <a href="https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/issues">Report issues</a>
+      <br>
+      Github: <a href="https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ">https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ</a>
+      <br>
+      Thanks: @kaneg
+      <h4>Feature:</h4>
+        <li>Support svn, Git(todo)</li>
+        <li>"Bang" function</li>
     ]]>
   </description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      <h4>1.0.0 - initial version</h4>
+        <li>Baic functions</li>
     ]]>
   </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="145.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
-    <!-- svn4idea -->
-    <depends>Subversion</depends>
-    <depends>Git4Idea</depends>
+  <depends>Subversion</depends>
+  <depends>Git4Idea</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
     <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting" />
-      <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting" />
+    <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting" />
   </extensions>
 
   <actions>
-    <!-- Add your actions here -->
-      <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Pre-commit" description="ReviewAction">
-          <keyboard-shortcut keymap="$default" first-keystroke="alt F"/>
-          <add-to-group group-id="ChangesViewPopupMenu" anchor="first" />
-      </action>
+    <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Pre-commit" description="ReviewAction">
+      <add-to-group group-id="ChangesViewPopupMenu" anchor="first" />
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="first" />
+    </action>
   </actions>
 
 </idea-plugin>

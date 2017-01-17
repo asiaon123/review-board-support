@@ -1,6 +1,6 @@
-package com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository;
+package com.guyazhou.tools.plugin.reviewboard.model.repository;
 
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.Link;
+import com.guyazhou.tools.plugin.reviewboard.model.Link;
 
 import java.util.Map;
 

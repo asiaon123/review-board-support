@@ -16,7 +16,7 @@ import javax.swing.*;
  */
 @State(
         name = "com.guyazhou.tools.plugin.ReviewBoardSetting",
-        storages = {@Storage("rbs.xml")}    // TODO to figure out
+        storages = {@Storage("rbs.xml")}
 )
 public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardSetting.State>, Configurable {
 

@@ -1,4 +1,6 @@
-package com.guyazhou.tools.plugin.reviewboard.service;
+package com.guyazhou.tools.plugin.reviewboard.model;
+
+import java.lang.*;
 
 /**
  * Response
@@ -9,8 +11,12 @@ public class Response {
     private static final Response OK = new Response("ok");
     private static final Response ERROR = new Response("error");
 
+    /**
+     * Response stat
+     * can be "ok" or "fail"
+     */
     private String stat;
-    private String err;
+    private Error err;
 
     public Response() {
 
@@ -20,7 +26,7 @@ public class Response {
         this.stat = stat;
     }
 
-    public Response(String responseStatus, String err) {
+    public Response(String responseStatus, Error err) {
         this.stat = responseStatus;
         this.err = err;
     }
@@ -29,11 +35,19 @@ public class Response {
         return "ok".equals(this.stat);
     }
 
-    public String getResponseStatus() {
+    public String getStat() {
         return stat;
     }
 
-    public String getErrorMsg() {
+    public void setStat(String stat) {
+        this.stat = stat;
+    }
+
+    public Error getErr() {
         return err;
+    }
+
+    public void setErr(Error err) {
+        this.err = err;
     }
 }

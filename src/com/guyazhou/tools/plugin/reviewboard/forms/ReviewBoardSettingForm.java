@@ -35,18 +35,34 @@ public class ReviewBoardSettingForm {
     private JPanel basicPanel;
 
     {
-        testLoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                testLogin(getUsername(), getPassword());
+        testLoginButton.addActionListener(new UserTestLoginActionListener());
+        companionTestLoginButton.addActionListener(new UserTestLoginActionListener());
+    }
+
+    /**
+     * Class UserTestLogiinActionListener
+     */
+    private class UserTestLoginActionListener implements ActionListener  {
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            try {
+                String username;
+                String password;
+                if (testLoginButton == event.getSource()) {
+                    username = getUsername();
+                    password = getPassword();
+                } else {
+                    username = getCompanionUsername();
+                    password = getCompanionPassword();
+                }
+                if ( testLogin(username, password) ) {
+                    Messages.showMessageDialog("Login successfully!", "Success", Messages.getInformationIcon());
+                }
+            } catch (Exception e) {
+                Messages.showErrorDialog(e.getMessage(), "Error");
             }
-        });
-        companionTestLoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                testLogin(getCompanionUsername(), getCompanionPassword());
-            }
-        });
+        }
     }
 
     /**
@@ -54,22 +70,20 @@ public class ReviewBoardSettingForm {
      * @param username username
      * @param password password
      */
-    private void testLogin(String username, String password) {
+    private Boolean testLogin(String username, String password) throws Exception {
         String serverURL = getServerURL();
         if (null == serverURL || "".equals(serverURL)) {
-            Messages.showWarningDialog("Server URL is empty!", "Warning");
-            return;
+            throw new Exception("Server URL is empty!");
         }
         if(null == username || null == password
                 || "".equals(username) || "".equals(password)) {
-            Messages.showWarningDialog("Username or password is empty, please input!", "Warning");
-            return;
+            throw new Exception("Username or password is empty!");
         }
         try {
-            String response = ReviewBoardClient.login(serverURL, username, password);
-            System.out.println(response);
+            String response = ReviewBoardClient.login(serverURL + "api/", username, password);
+            return !(null == response || "".equals(response));
         } catch (Exception e) {
-            Messages.showErrorDialog(e.getMessage(), "Error");
+            throw new Exception("Login failed!\r\n[ " + e.getMessage() + " ]");
         }
     }
 
@@ -77,8 +91,19 @@ public class ReviewBoardSettingForm {
         return reviewBoardSettingPanel;
     }
 
+    /**
+     * Get a valid server url
+     * @return http://example.xxx/ format server url
+     */
     public String getServerURL() {
-        return this.serverURLField.getText().trim();
+        String serverUrl = this.serverURLField.getText().trim();
+        if ( "".equals(serverUrl) ) {
+            return "";
+        }
+        if ( !serverUrl.endsWith("/") ) {
+            serverUrl += "/";
+        }
+        return serverUrl;
     }
 
     public void setServerURL(String serverURL) {

@@ -1,9 +1,10 @@
 package com.guyazhou.tools.plugin.reviewboard.action;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository.Repository;
+import com.guyazhou.tools.plugin.reviewboard.model.repository.Repository;
+import com.guyazhou.tools.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.ReviewParams;
+import com.guyazhou.tools.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
@@ -41,35 +42,31 @@ public class ReviewAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
 
-        // 要不要final修饰??
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
-        // final修饰??
         VirtualFile[] virtualFiles = e.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
         if (null == virtualFiles || 0 == virtualFiles.length) {
-            Messages.showMessageDialog("Please select the files you want to review!", "Alert", Messages.getWarningIcon());
+            Messages.showWarningDialog("Please select the file(s) you want to review!", "Warning");
             return;
         }
 
-        final AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
-        System.out.println(abstractVcs.getName());  // svn, Git
+        AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
         // verify selected files are under the same VCS.
         if (!ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles)) {
-            Messages.showWarningDialog("Some of the files are not under control of VCS!", "Alert");
+            Messages.showErrorDialog("Some files are not under control of VCS!", "Error");
             return;
         }
 
-        final ChangeListManager changeListManager = ChangeListManager.getInstance(project);
+        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         // for what??
         LocalChangeList localChangeList;
         for (VirtualFile virtualFile : virtualFiles) {
             localChangeList = changeListManager.getChangeList(virtualFile);
             if (null != localChangeList) {
-                changeMessage = localChangeList.getName();  // 选取的文件所在的 changeList name 如default
+                changeMessage = localChangeList.getName();  // change list name, example: default
                 break;
             }
         }
-        // for what??
 
         changeListManager.invokeAfterUpdate(new Runnable() {
             @Override
@@ -83,7 +80,7 @@ public class ReviewAction extends AnAction {
                     Messages.showErrorDialog(e.getMessage(), "Error");
                 }
             }
-        }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "刷新VCS", ModalityState.current());
+        }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "Refreshing VCS...", ModalityState.current());
 
     }
 
@@ -96,13 +93,30 @@ public class ReviewAction extends AnAction {
      */
     private void execute(final Project project, final VCSBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
 
-        vcsBuilder.build(project, virtualFiles);
-        String diff = vcsBuilder.getDiff();
-        if (null == diff) {
-            throw new Exception("No difference detected!");
+        try {
+            vcsBuilder.build(project, virtualFiles);
+        } catch (Exception e) {
+            throw new Exception("Build VCS error, " + e.getMessage());
         }
-        ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
-        Repository[] repositories = reviewBoardClient.getRepositories().getRepositories();
+        String diff = vcsBuilder.getDifferences();
+        if (null == diff) {
+            throw new Exception("No differences detected!");
+        }
+
+        ReviewBoardClient reviewBoardClient;
+        try {
+            reviewBoardClient = new ReviewBoardClient();
+        } catch (Exception e) {
+            throw new Exception("ReviewBoardClient init error, " + e.getMessage());
+        }
+
+        RepositoryResponse repositoryResponse;
+        try {
+            repositoryResponse = reviewBoardClient.getRepositories();
+        } catch (Exception e) {
+            throw new Exception("Get repository response error, " + e.getMessage());
+        }
+        Repository[] repositories = repositoryResponse.getRepositories();
         if (null != repositories) {
             showPostForm(project, vcsBuilder, repositories);
         }
@@ -120,7 +134,7 @@ public class ReviewAction extends AnAction {
         int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), repositories);
 
         SubmitDialogForm submitDialogForm = new SubmitDialogForm(project,
-                "haha",
+                changeMessage,
                 "what?",
                 repositories,
                 possibleRepositoryIndex) {
@@ -151,13 +165,13 @@ public class ReviewAction extends AnAction {
                 }
                 reviewParams.setSvnRoot(vcsBuilder.getRepositoryURL());
 
-                //if (null == diff)
+                reviewParams.setDiff(vcsBuilder.getDifferences());
 
                 this.addTextToHistory();
 
                 Task.Backgroundable submitTask = new Task.Backgroundable(project,
                         "Submiting...",
-                        false,
+                        true,
                         new PerformInBackgroundOption() {
                             @Override
                             public boolean shouldStartInBackground() {
@@ -172,6 +186,11 @@ public class ReviewAction extends AnAction {
                     Boolean isSubmitSuccess = false;
 
                     @Override
+                    public void onCancel() {
+                        super.onCancel();
+                    }
+
+                    @Override
                     public void onSuccess() {
 
                         if (isSubmitSuccess) {
@@ -181,20 +200,18 @@ public class ReviewAction extends AnAction {
                                 PopupUtil.showBalloonForActiveFrame("Review setting state is null, why?", MessageType.ERROR);
                                 return;
                             }
-                            StringBuffer reviewURL = new StringBuffer(persistentState.getServerURL());
-                            reviewURL.append("/r");
+                            StringBuilder reviewURL = new StringBuilder(persistentState.getServerURL());
+                            reviewURL.append("/r/");
                             reviewURL.append(reviewParams.getReviewId());
                             //reviewURL.append("/diff/");
 
-                            StringBuffer successInfoMsg = new StringBuffer();
-                            successInfoMsg.append("Congratulations! submit success.\r\n");
-                            successInfoMsg.append("the review URL is ");
-                            successInfoMsg.append(reviewURL.toString());
-                            successInfoMsg.append("\r\n");
-                            successInfoMsg.append("Jump to the review page now?");
+                            // Reposts it's more efficient than StringBuilder/StringBuffer?
+                            String successInfoMsg = "Congratulations! submit success.\r\n" +
+                                    "the review URL is " + reviewURL.toString() + "\r\n" +
+                                    "Jump to the review page now?";
 
-                            int selectedValue = Messages.showYesNoDialog(successInfoMsg.toString(),
-                                    "Submit Success",
+                            int selectedValue = Messages.showYesNoDialog(successInfoMsg,
+                                    "Success!",
                                     "Jump now",
                                     "No",
                                     Messages.getInformationIcon());
@@ -203,7 +220,7 @@ public class ReviewAction extends AnAction {
                             }
 
                         } else {
-                            PopupUtil.showBalloonForActiveFrame("what error message to show?", MessageType.ERROR);
+                            // TODO ?
                         }
 
                     }

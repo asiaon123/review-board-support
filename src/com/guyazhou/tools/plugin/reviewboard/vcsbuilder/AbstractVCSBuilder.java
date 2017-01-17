@@ -1,26 +1,10 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
 
-import com.intellij.openapi.diff.impl.patch.FilePatch;
-import com.intellij.openapi.diff.impl.patch.UnifiedDiffWriter;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.AbstractVcs;
-import com.intellij.openapi.vcs.FilePath;
-import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.Change;
-import com.intellij.openapi.vcs.changes.ChangeListManager;
-import com.intellij.openapi.vcs.changes.ContentRevision;
-import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,7 +14,7 @@ import java.util.List;
 public abstract class AbstractVCSBuilder implements VCSBuilder {
 
     protected AbstractVcs abstractVcs;
-    protected String diff;
+    protected String differences;
     protected String repositoryURL;
     protected String workingCopyPathInRepository;
     protected String workingCopyDir;
@@ -58,13 +42,21 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      */
     @Override
     public void build(Project project, VirtualFile[] virtualFiles) throws Exception {
-        setRepositoryRootAndWorkingCopyPath(virtualFiles);
-        this.diff = generateDiff(project, virtualFiles);
+        try {
+            this.setRepositoryRootAndWorkingCopyPath(virtualFiles);
+        } catch (Exception e) {
+            throw new Exception("Get repository root and working copy path error, " + e.getMessage());
+        }
+        try {
+            this.differences = generateDifferences(project, virtualFiles);
+        } catch (Exception e) {
+            throw new Exception("Generate differences error, " + e.getMessage());
+        }
     }
 
     @Override
-    public String getDiff() {
-        return this.diff;
+    public String getDifferences() {
+        return this.differences;
     }
 
     @Override
@@ -84,91 +76,11 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
     protected abstract void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception;
 
     /**
-     * TODO
-     * diff str
-     * @param project current idea project
-     * @param virtualFiles selected files
-     * @return different string
-     */
-    private String generateDiff(Project project, VirtualFile[] virtualFiles) {
-        List<Change> changeList = getChangeList(project, virtualFiles);
-        List<FilePatch> filePatchList = buildFilePatchList(project, changeList, this.workingCopyDir, false);
-        if (null == filePatchList) {
-            Messages.showWarningDialog("Create diff error", "Alter");
-            return null;
-        }
-        StringWriter stringWriter = new StringWriter();
-        try {
-            UnifiedDiffWriter.write(project, filePatchList, stringWriter, "\r\n", null);
-            stringWriter.close();
-            return stringWriter.toString();
-        } catch (IOException e) {
-            Messages.showWarningDialog("Svn is still in refreshing, please try again later!", "Alter");
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     *
+     * Generate differences between local and remote repository
      * @param project current project
-     * @param changeList files change list
-     * @param workingCopyDir working copy directory
-     * @param b boolean
-     * @return FilePatches list
+     * @param virtualFiles virtural files
+     * @return diff string
      */
-    private List<FilePatch> buildFilePatchList(Project project, List<Change> changeList, String workingCopyDir, boolean b) {
-        Object object = null;
-        try {
-            // invoke api in 10.x
-            Class clz = Class.forName("com.intellij.openapi.diff.impl.patch.IdeaTextPatchBuilder");
-            Method method = clz.getMethod("buildPatch", Project.class, Collection.class, String.class, boolean.class);
-            object = method.invoke(null, project, changeList, workingCopyDir, b);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        if (null != object && object instanceof List) {
-            return (List<FilePatch>) object;
-        }
-        return null;
-    }
+    protected abstract String generateDifferences(Project project, VirtualFile[] virtualFiles) throws Exception;
 
-    /**
-     *
-     * @return list
-     */
-    private List<Change> getChangeList(Project project, VirtualFile[] virtualFiles) {
-        List<Change> changeList = new ArrayList<>();
-        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
-        for (VirtualFile virtualFile : virtualFiles) {
-            if (null != virtualFile) {
-                virtualFile.refresh(false, true);
-                Change change = changeListManager.getChange(virtualFile);
-                if (null != change && Change.Type.NEW.equals(change.getType())) {
-                    ContentRevision afterRevision = change.getAfterRevision();
-                    change = new Change(null, new ContentRevision() {
-                        @Nullable
-                        @Override
-                        public String getContent() throws VcsException {
-                            return afterRevision.getContent();
-                        }
-
-                        @NotNull
-                        @Override
-                        public FilePath getFile() {
-                            return afterRevision.getFile();
-                        }
-
-                        @NotNull
-                        @Override
-                        public VcsRevisionNumber getRevisionNumber() {
-                            return null;
-                        }
-                    }, change.getFileStatus());
-                }
-                changeList.add(change);
-            }
-        }
-        return changeList;
-    }
 }

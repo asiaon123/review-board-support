@@ -1,7 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.forms;
 
-import com.guyazhou.tools.plugin.reviewboard.model.reviewboard.repository.Repository;
-import com.intellij.codeInsight.template.TemplateContextType;
+import com.guyazhou.tools.plugin.reviewboard.model.repository.Repository;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;

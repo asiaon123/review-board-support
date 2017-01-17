@@ -30,6 +30,7 @@ public class VCSBuilderFactory {
      * @throws Exception exception
      */
     public static VCSBuilder getVCSBuilder(AbstractVcs abstractVcs) throws Exception {
+
         Class<? extends VCSBuilder> vcsBuilderClass = builder.get(abstractVcs.getName());
         if (null != vcsBuilderClass) {
             Constructor<? extends VCSBuilder> vcsBuilderConstructor;
@@ -37,7 +38,7 @@ public class VCSBuilderFactory {
                 vcsBuilderConstructor = vcsBuilderClass.getConstructor(AbstractVcs.class);
                 return vcsBuilderConstructor.newInstance(abstractVcs);
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new Exception("Get VcsBuilder instance error!");
+                throw new Exception("Get VcsBuilder instance error, " + e.getMessage());
             }
         }
         return null;
