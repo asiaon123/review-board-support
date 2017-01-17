@@ -146,13 +146,13 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
                     | !"".equals(reviewBoardSettingForm.getCompanionUsername())
                     | !"".equals(reviewBoardSettingForm.getCompanionPassword());
         } else {
-            return !persistentState.getServerURL().equals(reviewBoardSettingForm.getServerURL())
-                    | !persistentState.getUsername().equals(reviewBoardSettingForm.getUsername())
-                    | !persistentState.getPassword().equals(reviewBoardSettingForm.getPassword())
-                    | !persistentState.getGroups().equals(reviewBoardSettingForm.getGroups())
-                    | !persistentState.getPeople().equals(reviewBoardSettingForm.getPeople())
-                    | !persistentState.getCompanionUsername().equals(reviewBoardSettingForm.getCompanionUsername())
-                    | !persistentState.getCompanionPassword().equals(reviewBoardSettingForm.getCompanionPassword());
+            return !reviewBoardSettingForm.getServerURL().equals(persistentState.getServerURL())
+                    | !reviewBoardSettingForm.getUsername().equals(persistentState.getUsername())
+                    | !reviewBoardSettingForm.getPassword().equals(persistentState.getPassword())
+                    | !reviewBoardSettingForm.getGroups().equals(persistentState.getGroups())
+                    | !reviewBoardSettingForm.getPeople().equals(persistentState.getPeople())
+                    | !reviewBoardSettingForm.getCompanionUsername().equals(persistentState.getCompanionUsername())
+                    | !reviewBoardSettingForm.getCompanionPassword().equals(persistentState.getCompanionPassword());
         }
     }
 
