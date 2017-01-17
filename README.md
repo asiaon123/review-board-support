@@ -8,7 +8,7 @@ Support Version >= `145.0` `(2016)`
 * "Bang" function(**)
 
 ###How to
-1. Download `.zip` file.
+1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.0.0/ReviewBoardPlugin4IntelliJ.zip "download") file.
 2. Put `.zip` file under `../IntelliJ IDEA ***/plugins/`.
 3. Restart `IDEA`.
 4. Click `File`-`settings`-`Plugins`-`Install Plugin From Disk`, select the file that you just located.
