@@ -24,6 +24,6 @@ Support Version >= `145.0` `(2016)`
 
 &emsp;&emsp; 7. Enjoy.
 
-######For mac
+* For mac
 
 &emsp;&emsp; similarly
