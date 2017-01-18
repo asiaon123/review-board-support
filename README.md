@@ -10,7 +10,7 @@ Support Version >= `145.0` `(2016)`
 ###How to
 * For windows
 
-&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.0.0/ReviewBoardPlugin4IntelliJ.zip "download") file.
+&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.0.1/ReviewBoardPlugin4IntelliJ.zip "download") file.
 
 &emsp;&emsp; 2. Unzip `.zip` file and put them under `../IntelliJ IDEA ***/plugins/` directly.
 
