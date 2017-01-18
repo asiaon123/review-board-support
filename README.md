@@ -8,6 +8,7 @@ Support Version >= `145.0` `(2016)`
 * "Bang" function(**)
 
 ###How to
+######For windows
 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.0.0/ReviewBoardPlugin4IntelliJ.zip "download") file.
 2. Unzip `.zip` file and put them under `../IntelliJ IDEA ***/plugins/` directly.
 3. Restart `IDEA`.
@@ -15,3 +16,6 @@ Support Version >= `145.0` `(2016)`
 5. Restart `IDEA` again.
 6. You will see setting panel at `File`-`settings`-`Other Settings`-`Review Board`.
 7. Enjoy.
+
+######For mac
+1. similarly
