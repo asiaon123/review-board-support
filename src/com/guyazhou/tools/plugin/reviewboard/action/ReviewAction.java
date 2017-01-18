@@ -40,11 +40,12 @@ public class ReviewAction extends AnAction {
     private String changeMessage;
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(AnActionEvent event) {
 
-        Project project = e.getData(PlatformDataKeys.PROJECT);
+        Project project = event.getData(PlatformDataKeys.PROJECT);
+        System.out.println(project);
 
-        VirtualFile[] virtualFiles = e.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
+        VirtualFile[] virtualFiles = event.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
         if (null == virtualFiles || 0 == virtualFiles.length) {
             Messages.showWarningDialog("Please select the file(s) you want to review!", "Warning");
             return;
