@@ -43,7 +43,6 @@ public class ReviewAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
 
         Project project = event.getData(PlatformDataKeys.PROJECT);
-        System.out.println(project);
 
         VirtualFile[] virtualFiles = event.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
         if (null == virtualFiles || 0 == virtualFiles.length) {
@@ -51,22 +50,27 @@ public class ReviewAction extends AnAction {
             return;
         }
 
+        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
+        LocalChangeList localChangeList;
+        for (VirtualFile virtualFile : virtualFiles) {
+            if (virtualFile.isDirectory()) {
+                Messages.showWarningDialog("Only file type is permitted, please remove directory!", "Warning");
+                return;
+            }
+            localChangeList = changeListManager.getChangeList(virtualFile);
+            if (null == localChangeList) {
+                Messages.showWarningDialog("File ( " + virtualFile.getName() + " ) is not changed!", "Warning");
+                return;
+            } else {
+                changeMessage = localChangeList.getName();  // ??
+            }
+        }
+
         AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
         // verify selected files are under the same VCS.
         if (!ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles)) {
             Messages.showErrorDialog("Some files are not under control of VCS!", "Error");
             return;
-        }
-
-        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
-        // for what??
-        LocalChangeList localChangeList;
-        for (VirtualFile virtualFile : virtualFiles) {
-            localChangeList = changeListManager.getChangeList(virtualFile);
-            if (null != localChangeList) {
-                changeMessage = localChangeList.getName();  // change list name, example: default
-                break;
-            }
         }
 
         changeListManager.invokeAfterUpdate(new Runnable() {
