@@ -50,6 +50,13 @@ public class ReviewAction extends AnAction {
             return;
         }
 
+        AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
+        // verify selected files are under the same VCS.
+        if ( !ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles) ) {
+            Messages.showErrorDialog("Some files are not under control of VCS!", "Error");
+            return;
+        }
+
         ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         LocalChangeList localChangeList;
         for (VirtualFile virtualFile : virtualFiles) {
@@ -64,13 +71,6 @@ public class ReviewAction extends AnAction {
             } else {
                 changeMessage = localChangeList.getName();  // ??
             }
-        }
-
-        AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
-        // verify selected files are under the same VCS.
-        if (!ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles)) {
-            Messages.showErrorDialog("Some files are not under control of VCS!", "Error");
-            return;
         }
 
         changeListManager.invokeAfterUpdate(new Runnable() {
