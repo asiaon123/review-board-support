@@ -13,12 +13,14 @@
       <br>
       Thanks: @kaneg
       <h4>Feature:</h4>
-        <li>Support svn, Git(todo)</li>
+        <li>Support svn, Git(TODO)</li>
         <li>"Bang" function</li>
     ]]>
   </description>
 
   <change-notes><![CDATA[
+      <h4>1.1.0</h4>
+        <li>"Bang" function online now</li>
       <h4>1.0.0 - initial version</h4>
         <li>Baic functions</li>
     ]]>

@@ -243,6 +243,79 @@ public class ReviewBoardClient {
      */
 
     /**
+     * Auto review for review-request
+     * @param reviewId review request id
+     * @return true if success, otherwise false
+     * @throws Exception exception
+     */
+    public Boolean autoReview(String reviewId) throws Exception {
+
+        // verify second person user info
+        ReviewBoardSetting.State persistentState = ReviewBoardSetting.getInstance().getState();
+        if (null == persistentState) {
+            throw new Exception("State is null");
+        }
+        String companionUsername = persistentState.getCompanionUsername();
+        String companionPassword = persistentState.getCompanionPassword();
+        if (null == companionUsername || "".equals(companionUsername)
+                || null == companionPassword || "".equals(companionPassword)) {
+            throw new Exception("Companion username or password is empty");
+        }
+
+        // basic params
+        Map<String, String> headers = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ship_it", "true");
+        params.put("body_top", "Ship It!");
+        params.put("public", "1");
+
+        // first person review
+        String cookie;
+        try {
+            cookie = this.getCookie();
+        } catch (Exception e) {
+            throw new Exception("Get cookie error, " + e.getMessage());
+        }
+        headers.put("Cookie", cookie);
+
+        String responseJson;
+        try {
+            responseJson = new HttpClient(headers).post(this.apiURL + "review-requests/" + reviewId + "/reviews/", params);
+        } catch (Exception e) {
+            throw new Exception("Post review request fails, " + e.getMessage());
+        }
+        Gson gson = new Gson();
+        Response response = gson.fromJson(responseJson, Response.class);
+        if (response.isOK()) {
+
+            // second person
+            try {
+                cookie = ReviewBoardClient.login(this.apiURL, companionUsername, companionPassword);
+            } catch (Exception e) {
+                throw new Exception("Companion login failed, " + e.getMessage());
+            }
+            if ( null == cookie || "".equals(cookie) ) {
+                throw new Exception("Companion cookie is empty");
+            }
+            headers.put("Cookie", cookie);
+            try {
+                responseJson = new HttpClient(headers).post(this.apiURL + "review-requests/" + reviewId + "/reviews/", params);
+            } catch (Exception e) {
+                throw new Exception("Post review request fails, " + e.getMessage());
+            }
+            response = gson.fromJson(responseJson, Response.class);
+            if (response.isOK()) {
+                return true;
+            } else {
+                throw new Exception("Second person: " + response.getErr().getCode() + ": " + response.getErr().getMsg());
+            }
+
+        } else {
+            throw new Exception("First Person: " + response.getErr().getCode() + ": " + response.getErr().getMsg());
+        }
+    }
+
+    /**
      * Put a key-value to map
      * @param params map
      * @param key key

@@ -1,6 +1,7 @@
 package com.guyazhou.tools.plugin.reviewboard.action;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
+import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.Repository;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
@@ -103,6 +104,7 @@ public class ReviewAction extends AnAction {
         } catch (Exception e) {
             throw new Exception("Build VCS error, " + e.getMessage());
         }
+
         String diff = vcsBuilder.getDifferences();
         if (null == diff) {
             throw new Exception("No differences detected!");
@@ -123,7 +125,7 @@ public class ReviewAction extends AnAction {
         }
         Repository[] repositories = repositoryResponse.getRepositories();
         if (null != repositories) {
-            showPostForm(project, vcsBuilder, repositories);
+            this.showPostForm(project, vcsBuilder, repositories);
         }
 
     }
@@ -138,15 +140,13 @@ public class ReviewAction extends AnAction {
 
         int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), repositories);
 
-        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project,
-                changeMessage,
-                "what?",
-                repositories,
-                possibleRepositoryIndex) {
+        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project, changeMessage, "what?", repositories, possibleRepositoryIndex) {
+
             @Override
             protected void doOKAction() {
 
-                if (!isOKActionEnabled()) {
+                // verify necessary fields
+                if ( !isOKActionEnabled() ) {
                     return;
                 }
 
@@ -162,21 +162,17 @@ public class ReviewAction extends AnAction {
                 reviewParams.setPerson(this.getPeople());
                 reviewParams.setDescription(this.getDescription());
                 reviewParams.setRepositoryId( String.valueOf(this.getSelectedRepositoryId()) );
-
                 if (null == vcsBuilder.getWorkingCopyPathInRepository()) {
                     reviewParams.setSvnBasePath("");
                 } else {
                     reviewParams.setSvnBasePath(vcsBuilder.getWorkingCopyPathInRepository());
                 }
                 reviewParams.setSvnRoot(vcsBuilder.getRepositoryURL());
-
                 reviewParams.setDiff(vcsBuilder.getDifferences());
 
                 this.addTextToHistory();
 
-                Task.Backgroundable submitTask = new Task.Backgroundable(project,
-                        "Submiting...",
-                        true,
+                Task.Backgroundable submitTask = new Task.Backgroundable(project, "Submiting...", true,
                         new PerformInBackgroundOption() {
                             @Override
                             public boolean shouldStartInBackground() {
@@ -199,29 +195,63 @@ public class ReviewAction extends AnAction {
                     public void onSuccess() {
 
                         if (isSubmitSuccess) {
-                            // submit success, show review urls
                             ReviewBoardSetting.State persistentState = ReviewBoardSetting.getInstance().getState();
                             if (null == persistentState) {
                                 PopupUtil.showBalloonForActiveFrame("Review setting state is null, why?", MessageType.ERROR);
                                 return;
                             }
                             StringBuilder reviewURL = new StringBuilder(persistentState.getServerURL());
-                            reviewURL.append("/r/");
+                            reviewURL.append("r/");
                             reviewURL.append(reviewParams.getReviewId());
-                            //reviewURL.append("/diff/");
 
-                            // Reposts it's more efficient than StringBuilder/StringBuffer?
-                            String successInfoMsg = "Congratulations! submit success.\r\n" +
-                                    "the review URL is " + reviewURL.toString() + "\r\n" +
-                                    "Jump to the review page now?";
+                            // auto review
+                            Boolean isAutoReview = false;
+                            String description = reviewParams.getDescription();
+                            if (description.contains("*bang*")) {
+                                isAutoReview = true;
+                            }
 
-                            int selectedValue = Messages.showYesNoDialog(successInfoMsg,
-                                    "Success!",
-                                    "Jump now",
-                                    "No",
-                                    Messages.getInformationIcon());
-                            if (Messages.YES == selectedValue) {
-                                BrowserUtil.browse(reviewURL.toString());
+                            int selectedValue;  // YES=0, NO=1
+                            if (isAutoReview) {
+                                String autoReviewInfoMsg = "Congratulations! submit success.\r\n" +
+                                        "the review URL is " + reviewURL.toString() + "\r\n" +
+                                        "auto review now?";
+                                selectedValue = Messages.showYesNoDialog(autoReviewInfoMsg, "Success!", "Auto review", "No", Messages.getInformationIcon());
+                                if (Messages.YES == selectedValue) {
+                                    ReviewBoardClient reviewBoardClient;
+                                    try {
+                                        reviewBoardClient = new ReviewBoardClient();
+                                    } catch (Exception e) {
+                                        Messages.showErrorDialog(e.getMessage(), "Auto Review Fails");
+                                        return;
+                                    }
+                                    Boolean isAutoReviewSuccess = false;
+                                    try {
+                                        isAutoReviewSuccess = reviewBoardClient.autoReview(reviewParams.getReviewId());
+                                    } catch (Exception e) {
+                                        Messages.showErrorDialog(e.getMessage(), "Auto Review Error");
+                                    }
+                                    if (isAutoReviewSuccess) {
+                                        Messages.showInfoMessage("Auto review successfully!", "Auto Review Success");
+                                    } else {
+                                        String errorInfoMsg = "Sorry! auto review fails, please review it yourself!\r\n" +
+                                                "the review URL is " + reviewURL.toString() + "\r\n" +
+                                                "Jump to the review page now?";
+                                        selectedValue = Messages.showYesNoDialog(errorInfoMsg, "Error!", "Jump now", "No", Messages.getInformationIcon());
+                                        if (Messages.YES == selectedValue) {
+                                            BrowserUtil.browse(reviewURL.toString());
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Reports it's more efficient than StringBuilder/StringBuffer?
+                                String successInfoMsg = "Congratulations! submit success.\r\n" +
+                                        "the review URL is " + reviewURL.toString() + "\r\n" +
+                                        "Jump to the review page now?";
+                                selectedValue = Messages.showYesNoDialog(successInfoMsg, "Success!", "Jump now", "No", Messages.getInformationIcon());
+                                if (Messages.YES == selectedValue) {
+                                    BrowserUtil.browse(reviewURL.toString());
+                                }
                             }
 
                         } else {
@@ -277,7 +307,7 @@ public class ReviewAction extends AnAction {
                 }
             }
         }
-        // try relevance
+        // try edit distance
         if (-1 == possibleRepositoryIndex) {
             if ( !repositoryURL.contains("//") ) {
                 repositoryURL = "//" + repositoryURL;

@@ -1,16 +1,18 @@
 # ReviewBoardPlugin4IntelliJ
 A code review plugin for review board.
 
-Support Version >= `145.0` `(2016)`
+Support review board version (Web API = `2.0`)
+
+Support IntelliJ IDEA version >= `145.0` `(2016)`
 
 ###Features
 * Basic function
-* "Bang" function(**)
+* "Bang" function
 
 ###How to
 * For windows
 
-&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.0.1/ReviewBoardPlugin4IntelliJ.zip "download") file.
+&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.1.0/ReviewBoardPlugin4IntelliJ.zip "download") file.
 
 &emsp;&emsp; 2. Unzip `.zip` file and put them under `../IntelliJ IDEA ***/plugins/` directly.
 
@@ -27,3 +29,6 @@ Support Version >= `145.0` `(2016)`
 * For mac
 
 &emsp;&emsp; similarly
+
+###\#Tips#:
+Before install new version, please uninstall old version.
