@@ -207,7 +207,7 @@ public class ReviewAction extends AnAction {
                             // auto review
                             Boolean isAutoReview = false;
                             String description = reviewParams.getDescription();
-                            if (description.contains("*bang*")) {
+                            if (description.contains("bang")) {
                                 isAutoReview = true;
                             }
 
@@ -232,7 +232,7 @@ public class ReviewAction extends AnAction {
                                         Messages.showErrorDialog(e.getMessage(), "Auto Review Error");
                                     }
                                     if (isAutoReviewSuccess) {
-                                        Messages.showInfoMessage("Auto review successfully!", "Auto Review Success");
+                                        Messages.showInfoMessage("Auto review successfully, reviewId: " + reviewParams.getReviewId(), "Auto Review Success");
                                     } else {
                                         String errorInfoMsg = "Sorry! auto review fails, please review it yourself!\r\n" +
                                                 "the review URL is " + reviewURL.toString() + "\r\n" +
