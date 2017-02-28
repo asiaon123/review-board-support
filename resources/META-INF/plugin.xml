@@ -19,8 +19,10 @@
   </description>
 
   <change-notes><![CDATA[
+      <h4>1.1.1</h4>
+        <li>Bug fix and some optimizations, auto review trigger now is "bang"</li>
       <h4>1.1.0</h4>
-        <li>"Bang" function online now</li>
+        <li>"Bang" function online now(for Dev@lvmama)</li>
       <h4>1.0.0 - initial version</h4>
         <li>Baic functions</li>
     ]]>
