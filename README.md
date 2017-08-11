@@ -7,12 +7,12 @@ Support IntelliJ IDEA version >= `145.0` `(2016)`
 
 ###Features
 * Basic function
-* "Bang" function (type in 'bang' in description before submit review to server.)
+* "Bang" function (type in 'ar' in description before submit review to server.)
 
 ###How to
 * For windows
 
-&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.1.1/ReviewBoardPlugin4IntelliJ.zip "download") file.
+&emsp;&emsp; 1. Download [`ReviewBoardPlugin4IntelliJ.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.2/ReviewBoardPlugin4IntelliJ.zip "download") file.
 
 &emsp;&emsp; 2. Unzip `.zip` file and put them under `../IntelliJ IDEA ***/plugins/` directly.
 

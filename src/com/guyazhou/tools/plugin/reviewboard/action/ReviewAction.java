@@ -207,7 +207,7 @@ public class ReviewAction extends AnAction {
                             // auto review
                             Boolean isAutoReview = false;
                             String description = reviewParams.getDescription();
-                            if (description.contains("bang")) {
+                            if (description.contains("ar")) {
                                 isAutoReview = true;
                             }
 

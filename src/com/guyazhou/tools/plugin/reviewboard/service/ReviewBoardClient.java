@@ -443,10 +443,20 @@ public class ReviewBoardClient {
 
         String path = apiURL + "repositories/";
         String response;
+
+        String cookie;
         try {
-            response = new HttpClient().get(path);
+            cookie = this.getCookie();
         } catch (Exception e) {
-            throw new Exception("Get repositories fails");
+            throw new Exception("Get cookie error, " + e.getMessage());
+        }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Cookie", cookie);
+
+        try {
+            response = new HttpClient(headers).get(path);
+        } catch (Exception e) {
+            throw new Exception("Get repositories fails, " + e.getMessage());
         }
         Gson gson = new Gson();
         return gson.fromJson(response, RepositoryResponse.class);
