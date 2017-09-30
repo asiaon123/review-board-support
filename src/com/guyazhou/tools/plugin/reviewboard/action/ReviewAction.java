@@ -10,6 +10,7 @@ import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -266,6 +267,15 @@ public class ReviewAction extends AnAction {
                         try {
                             isSubmitSuccess = ReviewBoardClient.submitReview(reviewParams, indicator);
                         } catch (Exception e) {
+
+                            NotificationGroup group = new NotificationGroup("FF", NotificationDisplayType.STICKY_BALLOON, true);
+                            Notification notification = group.createNotification("Error Occured!", e.getMessage(),
+                                    NotificationType.ERROR,
+                                    new NotificationListener.UrlOpeningListener(false)
+                            );
+
+                            Notifications.Bus.notify(notification);
+
                             PopupUtil.showBalloonForActiveFrame(e.getMessage(), MessageType.ERROR);
                         }
                     }
