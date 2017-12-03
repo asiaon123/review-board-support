@@ -1,20 +1,22 @@
 <idea-plugin>
   <id>com.guyazhou.tools.plugin.reviewboard4intellij</id>
-  <name>Reviewboard plugin for intelliJ</name>
+  <name>Review board plugin for intelliJ IDEA</name>
   <version>1.2</version>
   <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">www.guyazhou.com</vendor>
 
   <description><![CDATA[
-      A reviewboard plugin for intelliJ idea, helping post review to reviewboard server.
+      reviewboard plugin for intelliJ IDEA, helping submit review to review board.
       <br>
-      Issues: <a href="https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/issues">Report issues</a>
+      Usage guide: click <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/blob/master/README.md">How to use</a>
       <br>
-      Github: <a href="https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ">https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ</a>
+      Issues: <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/issues">Report issues</a>
       <br>
-      Thanks: @kaneg
+      Github: <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA</a>
+      <br>
+      Thanks to @kaneg for base code supporting.
       <h4>Feature:</h4>
-        <li>Support svn, Git(TODO)</li>
-        <li>"Bang" function</li>
+        <li>Subversion, Git(Will be available soon)</li>
+        <li>Auto review for little users</li>
     ]]>
   </description>
 
@@ -43,7 +45,7 @@
   </extensions>
 
   <actions>
-    <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Pre-commit" description="ReviewAction">
+    <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Submit review" description="ReviewAction">
       <add-to-group group-id="ChangesViewPopupMenu" anchor="first" />
       <add-to-group group-id="ProjectViewPopupMenu" anchor="first" />
       <add-to-group group-id="EditorPopupMenu" anchor="first" />
