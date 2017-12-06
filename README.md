@@ -1,4 +1,4 @@
-# ReviewBoardPlugin4IntelliJ
+# Review Board Plugin For IntelliJ IDEA
 A code review plugin for review board.
 
 Support review board version (Web API = `2.0`)
