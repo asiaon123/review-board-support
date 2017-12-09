@@ -18,9 +18,7 @@ public class Response {
     private String stat;
     private Error err;
 
-    public Response() {
-
-    }
+    public Response() { }
 
     public Response(String stat) {
         this.stat = stat;

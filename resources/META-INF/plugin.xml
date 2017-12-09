@@ -47,6 +47,10 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
         <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
+        <toolWindow id="Review board" icon="/toolwindow/paw_orange.png" anchor="bottom" secondary="false" canCloseContents="true"
+                    factoryClass="com.guyazhou.tools.plugin.reviewboard.toolwindow.ReviewToolWindowFactory"
+                    conditionClass="com.guyazhou.tools.plugin.reviewboard.toolwindow.ReviewToolWindowCondition"
+        />
     </extensions>
 
     <actions>
