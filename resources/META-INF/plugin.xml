@@ -48,8 +48,8 @@
         <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
         <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
         <toolWindow id="Review board" icon="/toolwindow/paw_orange.png" anchor="bottom" secondary="false" canCloseContents="true"
-                    factoryClass="com.guyazhou.tools.plugin.reviewboard.toolwindow.ReviewToolWindowFactory"
-                    conditionClass="com.guyazhou.tools.plugin.reviewboard.toolwindow.ReviewToolWindowCondition"
+                    factoryClass="com.guyazhou.tools.plugin.reviewboard.rbtoolwindow.ReviewToolWindowFactory"
+                    conditionClass="com.guyazhou.tools.plugin.reviewboard.rbtoolwindow.ReviewToolWindowCondition"
         />
     </extensions>
 

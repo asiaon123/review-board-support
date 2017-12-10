@@ -1,6 +1,7 @@
-package com.guyazhou.tools.plugin.reviewboard.toolwindow;
+package com.guyazhou.tools.plugin.reviewboard.rbtoolwindow;
 
-import com.guyazhou.tools.plugin.reviewboard.toolwindow.panels.TestReviewForm;
+import com.guyazhou.tools.plugin.reviewboard.model.enums.RBToolWindowPanels;
+import com.guyazhou.tools.plugin.reviewboard.rbtoolwindow.panels.TestReviewForm;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -19,13 +20,18 @@ public class ReviewToolWindowFactory implements ToolWindowFactory {
 
         ContentManager contentManager = toolWindow.getContentManager();
 
+        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+
         ReviewPanel reviewPanel = new ReviewPanel(false, project);
-        Content content = ContentFactory.SERVICE.getInstance().createContent(reviewPanel, "rrrrr", false);
+        Content content = contentFactory.createContent(reviewPanel, "rrrrr", false);
         content.setCloseable(true);
         contentManager.addContent(content);
 
-        Content aa = contentManager.getFactory().createContent(new TestReviewForm().getTestPanel(), "bbbbb", false);
-        contentManager.addContent(aa);
+        for (RBToolWindowPanels rbToolWindowPanel : RBToolWindowPanels.values()) {
+            contentManager.addContent(contentFactory.createContent(reviewPanel, rbToolWindowPanel.getShowName(), false));
+        }
+
+
     }
 
 }

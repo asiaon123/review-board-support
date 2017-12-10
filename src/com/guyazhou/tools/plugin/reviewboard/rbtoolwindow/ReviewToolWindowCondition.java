@@ -1,4 +1,4 @@
-package com.guyazhou.tools.plugin.reviewboard.toolwindow;
+package com.guyazhou.tools.plugin.reviewboard.rbtoolwindow;
 
 import com.intellij.openapi.util.Condition;
 

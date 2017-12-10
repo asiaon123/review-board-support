@@ -1,4 +1,4 @@
-package com.guyazhou.tools.plugin.reviewboard.toolwindow.panels;
+package com.guyazhou.tools.plugin.reviewboard.rbtoolwindow.panels;
 
 import javax.swing.*;
 
