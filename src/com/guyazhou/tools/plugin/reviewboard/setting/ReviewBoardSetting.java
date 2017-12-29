@@ -12,7 +12,7 @@ import javax.swing.*;
 
 /**
  * ReviewBoard setting
- * Created by Yakov on 2017/1/2.
+ * Created by YaZhou.Gu on 2017/1/2.
  */
 @State(
         name = "com.guyazhou.tools.plugin.ReviewBoardSetting",

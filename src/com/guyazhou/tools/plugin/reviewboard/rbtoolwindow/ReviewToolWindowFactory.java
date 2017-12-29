@@ -1,7 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.rbtoolwindow;
 
 import com.guyazhou.tools.plugin.reviewboard.model.enums.RBToolWindowPanels;
-import com.guyazhou.tools.plugin.reviewboard.rbtoolwindow.panels.TestReviewForm;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;

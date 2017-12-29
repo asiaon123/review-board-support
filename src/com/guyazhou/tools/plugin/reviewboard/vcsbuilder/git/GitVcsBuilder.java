@@ -1,6 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.git;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -9,10 +9,10 @@ import com.intellij.openapi.vfs.VirtualFile;
  * Git builder
  * Created by Yakov on 2016/12/28.
  */
-public class GitVCSBuilder extends AbstractVCSBuilder {
+public class GitVcsBuilder extends AbstractVcsBuilder {
 
 
-    public GitVCSBuilder(AbstractVcs abstractVcs) {
+    public GitVcsBuilder(AbstractVcs abstractVcs) {
         super(abstractVcs);
     }
 

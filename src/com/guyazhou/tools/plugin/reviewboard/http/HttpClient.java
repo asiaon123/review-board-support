@@ -15,9 +15,7 @@ public class HttpClient {
     private static final String MULTI_PART_BOUNDARY = "---------MULTIPART";
     private Map<String, String> headers;
 
-    public HttpClient() {
-
-    }
+    public HttpClient() { }
 
     public HttpClient(Map<String, String> headers) {
         this.headers = headers;

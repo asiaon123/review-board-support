@@ -8,10 +8,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.util.List;
 
 /**
- * VCS抽象方法
- * Created by Yakov on 2016/12/30.
+ * Created by YaZhou.Gu on 2016/12/30.
  */
-public abstract class AbstractVCSBuilder implements VCSBuilder {
+public abstract class AbstractVcsBuilder implements VcsBuilder {
 
     protected AbstractVcs abstractVcs;
     protected String differences;
@@ -25,7 +24,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * Set vcs
      * @param abstractVcs vcs
      */
-    protected AbstractVCSBuilder(AbstractVcs abstractVcs) {
+    protected AbstractVcsBuilder(AbstractVcs abstractVcs) {
         this.abstractVcs = abstractVcs;
     }
 

@@ -1,6 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsBuilder;
 import com.intellij.openapi.diff.impl.patch.FilePatch;
 import com.intellij.openapi.diff.impl.patch.UnifiedDiffWriter;
 import com.intellij.openapi.project.Project;
@@ -28,13 +28,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * svn builder
- * Created by Yakov on 2016/12/28.
+ * Created by YaZhou.Gu on 2016/12/28.
  */
-public class SVNVCSBuilder extends AbstractVCSBuilder {
+public class SvnVcsBuilder extends AbstractVcsBuilder {
 
 
-    public SVNVCSBuilder(AbstractVcs abstractVcs) {
+    public SvnVcsBuilder(AbstractVcs abstractVcs) {
         super(abstractVcs);
     }
 

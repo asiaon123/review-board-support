@@ -8,10 +8,11 @@ public enum HTTP_METHOD {
 
     GET,
     POST,
-    HEAD,
-    OPTIONS,
     PUT,
     DELETE,
-    TRACE,
+    HEAD,
+    OPTIONS,
+    TRACE
+    ;
 
 }

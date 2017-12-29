@@ -1,13 +1,12 @@
 package com.guyazhou.tools.plugin.reviewboard.action;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
-import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.Repository;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.tools.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VcsBuilder;
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.*;
@@ -79,7 +78,7 @@ public class ReviewAction extends AnAction {
             @Override
             public void run() {
                 try {
-                    VCSBuilder vcsBuilder = VCSBuilderFactory.getVCSBuilder(abstractVcs);
+                    VcsBuilder vcsBuilder = VCSBuilderFactory.getVCSBuilder(abstractVcs);
                     if (null != vcsBuilder) {
                         execute(project, vcsBuilder, virtualFiles);
                     }
@@ -98,7 +97,7 @@ public class ReviewAction extends AnAction {
      * @param virtualFiles selected files
      * @throws Exception io
      */
-    private void execute(final Project project, final VCSBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
+    private void execute(final Project project, final VcsBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
 
         try {
             vcsBuilder.build(project, virtualFiles);
@@ -137,7 +136,7 @@ public class ReviewAction extends AnAction {
      * @param vcsBuilder VCS builder
      * @param repositories repositories
      */
-    private void showPostForm(Project project, VCSBuilder vcsBuilder, Repository[] repositories) {
+    private void showPostForm(Project project, VcsBuilder vcsBuilder, Repository[] repositories) {
 
         int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), repositories);
 

@@ -6,9 +6,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * VCS Builder
- * Created by Yakov on 2016/12/28.
+ * Created by YaZhou.Gu on 2016/12/28.
  */
-public interface VCSBuilder {
+public interface VcsBuilder {
 
     /**
      * Get vcs

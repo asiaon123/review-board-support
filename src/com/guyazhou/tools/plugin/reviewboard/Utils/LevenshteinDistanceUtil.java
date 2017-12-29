@@ -3,7 +3,7 @@ package com.guyazhou.tools.plugin.reviewboard.Utils;
 /**
  * LevenshteinDistanceUtil
  * calculate the distance between two strings
- * Created by Yakov on 2017/1/4.
+ * Created by YaZhou.Gu on 2017/1/4.
  */
 public class LevenshteinDistanceUtil {
 
