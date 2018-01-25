@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">
     <id>com.guyazhou.tools.plugin.reviewboard4intellij</id>
-    <name>Review Board Support(before 2018)</name>
-    <version>1.4.Final</version>
+    <name>Review Board Support(IDEA <![CDATA[<]]> 2018)</name>
+    <version>1.4</version>
     <category>TOOLS INTEGRATION</category>
     <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">asiaon123</vendor>
     <idea-version since-build="145.0"/>
@@ -10,8 +10,11 @@
     <depends>Git4Idea</depends>
 
     <description><![CDATA[
-        <h3 style="color: red;">This plugin only supports idea that version is less than 181.2218(2018), Please use another plugin(Review board plugin) for version 2018
-        </h3>
+        <h4>Note:</h4>
+        <ul>
+            <li><span style="color: red;">The version 1.x ONLY support IDEA that version is less than 181.2218(IDEA 2018)</span> </li>
+            <li>Due to compability issue of official API, `Review Board Support` will be available for IDEA 2018 and later</li>
+        </ul>
 
         <h4>Features:</h4>
         <ul>
@@ -34,10 +37,11 @@
     </description>
 
     <change-notes><![CDATA[
-        <h4>1.4.Final</h4>
+        <h4>1.4</h4>
             <ol>
-                <li>Archive 1.0</li>
-                <li>1.0 only suppourt idea version before 181.2218(2018)</li>
+                <li>Archive 1.x</li>
+                <li>1.x only suppourt IDEA that version is less than 181.2218(2018)</li>
+                <li>Add image to commit action</li>
             </ol>
 
         <h4>1.3</h4>
@@ -48,24 +52,25 @@
 
         <h4>1.2</h4>
             <ol>
-                <li>Fix authority issue for review board version 2.5+</li>
-                <li>Chang auto review command to `ar`</li>
-                <li>Add post action support in editor view</li>
+                <li>Fix authentication issue for review board version 2.5+</li>
+                <li>Chang auto review trigger code to `ar`</li>
+                <li>Support post action support in both editor view and project view</li>
             </ol>
 
         <h4>1.1.1</h4>
             <ol>
-                <li>Bug fix and some optimizations, auto review trigger now is "bang"</li>
+                <li>Bug fix and some optimizations</li>
+                <li>Auto review trigger code is changing to "bang"</li>
             </ol>
 
         <h4>1.1.0</h4>
             <ol>
-                <li>"Bang" function online now(for Dev@lvmama)</li>
+                <li>"Bang" function online now(for some users@lvmama)</li>
             </ol>
 
-        <h4>1.0.0 - initial version</h4>
+        <h4>1.0.0</h4>
             <ol>
-                <li>Baic functions</li>
+                <li>First release</li>
             </ol>
     ]]>
     </change-notes>
@@ -80,7 +85,7 @@
                 class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction"
                 text="Pre-commit"
                 icon="/icons/logo.png"
-                description="ReviewAction">
+                description="Pre-commit action">
             <add-to-group group-id="ChangesViewPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
