@@ -1,48 +1,74 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">
     <id>com.guyazhou.tools.plugin.reviewboard4intellij</id>
-    <name>Review board plugin for intelliJ IDEA</name>
-    <version>1.3</version>
-    <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">www.guyazhou.com</vendor>
-
-    <description>
-        <![CDATA[
-            reviewboard plugin for intelliJ IDEA, helping submit review to review board.
-            <br>
-            Usage guide: click <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/blob/master/README.md">How to use</a>
-            <br>
-            Issues: <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/issues">Report issues</a>
-            <br>
-            Github: <a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA</a>
-            <br>
-            Thanks to @kaneg for base code supporting.
-            <h4>Feature:</h4>
-            <li>Subversion, Git(Will be available soon)</li>
-            <li>Auto review for little users</li>
-        ]]>
-    </description>
-
-    <change-notes>
-        <![CDATA[
-            <h4>1.3</h4>
-                <li>Some ui changes</li>
-                <li>Available for plugin repository</li>
-            <h4>1.2</h4>
-                <li>Fix authority issue for review board version 2.5+</li>
-                <li>Chang auto review command to `ar`</li>
-                <li>Add post action support in editor view</li>
-            <h4>1.1.1</h4>
-                <li>Bug fix and some optimizations, auto review trigger now is "bang"</li>
-            <h4>1.1.0</h4>
-                <li>"Bang" function online now(for Dev@lvmama)</li>
-            <h4>1.0.0 - initial version</h4>
-                <li>Baic functions</li>
-        ]]>
-    </change-notes>
-
+    <name>Review Board Support(before 2018)</name>
+    <version>1.4.Final</version>
+    <category>TOOLS INTEGRATION</category>
+    <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">asiaon123</vendor>
     <idea-version since-build="145.0"/>
 
     <depends>Subversion</depends>
     <depends>Git4Idea</depends>
+
+    <description><![CDATA[
+        <h3 style="color: red;">This plugin only supports idea that version is less than 181.2218(2018), Please use another plugin(Review board plugin) for version 2018
+        </h3>
+
+        <h4>Features:</h4>
+        <ul>
+            <li>Support Subversion, and Git will be available soon too</li>
+            <li>Auto review for users@lvmama</li>
+        </ul>
+
+        <h4>About:</h4>
+        <ul>
+            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/blob/master/README.md">Usage</a></li>
+            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/issues">Issues</a></li>
+            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">Source</a></li>
+        </ul>
+
+        <h4>Thanks:</h4>
+        <ul>
+            <li>@kaneg supports basic code</li>
+        </ul>
+    ]]>
+    </description>
+
+    <change-notes><![CDATA[
+        <h4>1.4.Final</h4>
+            <ol>
+                <li>Archive 1.0</li>
+                <li>1.0 only suppourt idea version before 181.2218(2018)</li>
+            </ol>
+
+        <h4>1.3</h4>
+            <ol>
+                <li>Some ui changes</li>
+                <li>Available for plugin repository</li>
+            </ol>
+
+        <h4>1.2</h4>
+            <ol>
+                <li>Fix authority issue for review board version 2.5+</li>
+                <li>Chang auto review command to `ar`</li>
+                <li>Add post action support in editor view</li>
+            </ol>
+
+        <h4>1.1.1</h4>
+            <ol>
+                <li>Bug fix and some optimizations, auto review trigger now is "bang"</li>
+            </ol>
+
+        <h4>1.1.0</h4>
+            <ol>
+                <li>"Bang" function online now(for Dev@lvmama)</li>
+            </ol>
+
+        <h4>1.0.0 - initial version</h4>
+            <ol>
+                <li>Baic functions</li>
+            </ol>
+    ]]>
+    </change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
@@ -50,7 +76,7 @@
     </extensions>
 
     <actions>
-        <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Submit review" description="ReviewAction">
+        <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Pre-commit" description="ReviewAction">
             <add-to-group group-id="ChangesViewPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
