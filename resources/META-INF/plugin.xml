@@ -76,7 +76,11 @@
     </extensions>
 
     <actions>
-        <action id="ReviewAction" class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction" text="Pre-commit" description="ReviewAction">
+        <action id="ReviewAction"
+                class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction"
+                text="Pre-commit"
+                icon="/icons/paw_orange.png"
+                description="ReviewAction">
             <add-to-group group-id="ChangesViewPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
