@@ -1,34 +1,16 @@
-# ReviewBoardPlugin4IntelliJ
-A code review plugin for review board.
+# Review Board Plugin for IntelliJ IDEA(version<2018) 
+Helping submit review request to Review Board server in IDEA directlly.
 
-Support review board version (Web API = `2.0`)
+###Prerequisite
 
-Support IntelliJ IDEA version >= `145.0` `(2016)`
+* review board version (Web API >= `2.0`)
+* IntelliJ IDEA version (`145.0[2016] ~ 181.2218[2018]`)
 
 ###Features
-* Basic function
-* "Bang" function (type in 'ar' in description before submit review to server.)
+* Pre commit review to RB server
+* Auto review for some 'lazy' users
 
-###How to
-* For windows
+###How to install
+Download dorectly from plugin repository.
 
-&emsp;&emsp; 1. Download [`ReviewBoard-Plugin-for-IntelliJ-IDEA.zip`](https://github.com/asiaon123/ReviewBoardPlugin4IntelliJ/releases/download/v1.3/ReviewBoard-Plugin-for-IntelliJ-IDEA.zip "download") file.
-
-&emsp;&emsp; 2. Unzip `.zip` file and put them under `../IntelliJ IDEA ***/plugins/` directly.
-
-&emsp;&emsp; 3. Restart `IDEA`.
-
-&emsp;&emsp; 4. Click `File`-`settings`-`Plugins`-`Install Plugin From Disk`, select the file that you just located.
-
-&emsp;&emsp; 5. Restart `IDEA` again.
-
-&emsp;&emsp; 6. You will see setting panel at `File`-`settings`-`Other Settings`-`Review Board`.
-
-&emsp;&emsp; 7. Enjoy.
-
-* For mac
-
-&emsp;&emsp; similarly
-
-###\#Tips#:
-Before install new version, please uninstall old version.
+Find repository at `File` -> `Settings` -> `Plugins`, and typing in `Review Board Support`
