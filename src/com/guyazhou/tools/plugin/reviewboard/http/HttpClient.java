@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * HttpClient
- * Created by Yakov on 2017/1/2.
+ * Created by YaZhou.Gu on 2017/1/2.
  */
 public class HttpClient {
 
