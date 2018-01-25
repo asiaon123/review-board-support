@@ -1,5 +1,5 @@
 # Review Board Plugin for IntelliJ IDEA(version<2018) 
-Helping submit review request to Review Board server in IDEA directlly.
+Helping submit review request to Review Board server in IDEA directly.
 
 ###Prerequisite
 
@@ -11,6 +11,6 @@ Helping submit review request to Review Board server in IDEA directlly.
 * Auto review for some 'lazy' users
 
 ###How to install
-Download dorectly from plugin repository.
+Download directly from plugin repository.
 
 Find repository at `File` -> `Settings` -> `Plugins`, and typing in `Review Board Support`
