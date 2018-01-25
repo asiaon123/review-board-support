@@ -1,5 +1,5 @@
 # Review Board Plugin for IntelliJ IDEA(version<2018) 
-Helping submit review request to Review Board server in IDEA directly.
+Helping submit review request to Review Board server from IDEA directly.
 
 ###Prerequisite
 
