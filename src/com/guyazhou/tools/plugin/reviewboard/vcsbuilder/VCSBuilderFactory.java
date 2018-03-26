@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * VCS factoty
  * Support svn, Git
- * Created by Yakov on 2016/12/28.
+ * Created by YaZhou.Gu on 2016/12/28.
  */
 public class VCSBuilderFactory {
 

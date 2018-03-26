@@ -43,7 +43,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
     @Override
     public void build(Project project, VirtualFile[] virtualFiles) throws Exception {
         try {
-            this.setRepositoryRootAndWorkingCopyPath(virtualFiles);
+            this.setRepositoryRootAndWorkingCopyPath(project, virtualFiles);
         } catch (Exception e) {
             throw new Exception("Get repository root and working copy path error, " + e.getMessage());
         }
@@ -71,9 +71,10 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
 
     /**
      * Set repository root url and working copy path in repository according to the given selected virtual files
+     * @param project project
      * @param virtualFiles selected files
      */
-    protected abstract void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception;
+    protected abstract void setRepositoryRootAndWorkingCopyPath(Project project, VirtualFile[] virtualFiles) throws Exception;
 
     /**
      * Generate differences between local and remote repository
