@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.svn.SvnUtil;
 import org.jetbrains.idea.svn.SvnVcs;
-import org.tmatesoft.svn.core.SVNURL;
+import org.jetbrains.idea.svn.api.Url;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,11 +63,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
             if (null != virtualFile) {
                 virtualFile.refresh(false, true);   // refresh file synchronously adv. synchronize v.
 
-                File workingCopyRoot = SvnUtil.getWorkingCopyRoot( new File(virtualFile.getPath()) );
-                // compatible with v1.8
-                if (null == workingCopyRoot) {
-                    workingCopyRoot = SvnUtil.getWorkingCopyRootNew( new File(virtualFile.getPath()) );
-                }
+                File workingCopyRoot = SvnUtil.getWorkingCopyRootNew(new File(virtualFile.getPath()));
                 if(null == workingCopyRoot) {
                     throw new Exception("Can not get working copy root of file(s)");
                 }
@@ -76,12 +72,12 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
                 }
 
                 SvnVcs svnVcs = (SvnVcs) this.abstractVcs;
-                SVNURL remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
+                Url remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
                 if (null != remoteRootSVNURL && null == remoteRootURL) {    // only one time too?
                     remoteRootURL = remoteRootSVNURL.toString();
                 }
 
-                SVNURL repositoryRootSVNURL = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
+                Url repositoryRootSVNURL = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
                 if (null != repositoryRootSVNURL && null == repositoryURL) {    // only one time
                     repositoryURL = repositoryRootSVNURL.toString();
                 }
