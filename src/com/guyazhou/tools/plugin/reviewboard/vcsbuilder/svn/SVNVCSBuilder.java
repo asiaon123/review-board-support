@@ -43,7 +43,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
      * @param virtualFiles selected files
      */
     @Override
-    protected void setRepositoryRootAndWorkingCopyPath(VirtualFile[] virtualFiles) throws Exception {
+    protected void setRepositoryRootAndWorkingCopyPath(Project project, VirtualFile[] virtualFiles) throws Exception {
 
         /*
          * Reference info
