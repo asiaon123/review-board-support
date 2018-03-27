@@ -1,24 +1,19 @@
 <idea-plugin url="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">
-    <id>com.guyazhou.tools.plugin.reviewboard4intellij</id>
-    <name>Review Board Support(IDEA <![CDATA[<]]> 2018)</name>
-    <version>1.5</version>
+    <id>com.guyazhou.tools.plugin.reviewboard</id>
+    <name>Review Board Support</name>
+    <version>2.0</version>
     <category>TOOLS INTEGRATION</category>
     <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">asiaon123</vendor>
-    <idea-version since-build="145.0"/>
+    <idea-version since-build="181.2218"/>
 
     <depends>Subversion</depends>
     <depends>Git4Idea</depends>
 
     <description><![CDATA[
-        <h4>Note:</h4>
-        <ul>
-            <li><span style="color: red;">The version 1.x ONLY support IDEA that version is less than 181.2218(IDEA 2018)</span> </li>
-            <li>Due to compability issue of official API, `Review Board Support` will be available for IDEA 2018 and later</li>
-        </ul>
         <h4>Features:</h4>
         <ul>
             <li>Support Subversion, Git</li>
-            <li>Auto review for users@lvmama</li>
+            <li>Auto review for users@lvmama.com</li>
         </ul>
         <h4>About:</h4>
         <ul>
@@ -34,6 +29,10 @@
     </description>
 
     <change-notes><![CDATA[
+        <h4>2.0</h4>
+            <ol>
+                <li>Fix compability to jetbrains series version 2018</li>
+            </ol>
         <h4>1.5</h4>
             <ol>
                 <li>Add suppourt for Git</li>
