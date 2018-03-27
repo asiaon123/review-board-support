@@ -1,10 +1,10 @@
-# Review Board Plugin for IntelliJ IDEA(version<2018) 
+# Review Board Plugin for IntelliJ IDEA
 Helping submit review request to Review Board server from IDEA directly.
 
 ###Prerequisite
 
 * review board version (Web API >= `2.0`)
-* IntelliJ IDEA version (`145.0[2016] ~ 181.2218[2018]`)
+* IntelliJ IDEA version (`181.2218[2018] ~ `)
 
 ###Features
 * Pre commit review to RB server
