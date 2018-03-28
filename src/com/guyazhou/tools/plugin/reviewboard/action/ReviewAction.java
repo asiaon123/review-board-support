@@ -52,6 +52,7 @@ public class ReviewAction extends AnAction {
             return;
         }
 
+        assert project != null;
         AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
         // verify selected files are under the same VCS.
         if ( !ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles) ) {
@@ -79,6 +80,7 @@ public class ReviewAction extends AnAction {
             @Override
             public void run() {
                 try {
+                    assert abstractVcs != null;
                     VCSBuilder vcsBuilder = VCSBuilderFactory.getVCSBuilder(abstractVcs);
                     if (null != vcsBuilder) {
                         execute(project, vcsBuilder, virtualFiles);
@@ -318,17 +320,17 @@ public class ReviewAction extends AnAction {
             }
         }
         // try edit distance
-        if (-1 == possibleRepositoryIndex) {
-            if ( !repositoryURL.contains("//") ) {
-                repositoryURL = "//" + repositoryURL;
-            }
-            String path = URI.create(repositoryURL).getPath();
-            String[] repos = new String[repositories.length];
-            for (int i=0; i<repositories.length; i++) {
-                repos[i] = repositories[i].getName();
-            }
-            possibleRepositoryIndex = -1;   // TODO to replace with LevenshteinDistance
-        }
+//        if (-1 == possibleRepositoryIndex) {
+//            if ( !repositoryURL.contains("//") ) {
+//                repositoryURL = "//" + repositoryURL;
+//            }
+//            String path = URI.create(repositoryURL).getPath();
+//            String[] repos = new String[repositories.length];
+//            for (int i=0; i<repositories.length; i++) {
+//                repos[i] = repositories[i].getName();
+//            }
+//            possibleRepositoryIndex = -1;   // TODO to replace with LevenshteinDistance
+//        }
         return possibleRepositoryIndex;
     }
 

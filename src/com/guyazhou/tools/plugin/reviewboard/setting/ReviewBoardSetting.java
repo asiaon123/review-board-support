@@ -1,22 +1,25 @@
 package com.guyazhou.tools.plugin.reviewboard.setting;
 
 import com.guyazhou.tools.plugin.reviewboard.forms.ReviewBoardSettingForm;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
 /**
  * ReviewBoard setting
- * Created by Yakov on 2017/1/2.
+ * Created by YaZhou.Gu on 2017/1/2.
  */
 @State(
-        name = "com.guyazhou.tools.plugin.ReviewBoardSetting",
-        storages = {@Storage("rbs.xml")}
+        name = "com.guyazhou.tools.plugin.reviewboard.setting",
+        storages = {@Storage("review-board-support.xml")}
 )
 public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardSetting.State>, Configurable {
 
@@ -52,30 +55,39 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
         public String getServerURL() {
             return serverURL;
         }
+
         public void setServerURL(String serverURL) {
             this.serverURL = serverURL;
         }
+
         public String getUsername() {
             return username;
         }
+
         public void setUsername(String username) {
             this.username = username;
         }
+
         public String getPassword() {
             return password;
         }
+
         public void setPassword(String password) {
             this.password = password;
         }
+
         public String getGroups() {
             return groups;
         }
+
         public void setGroups(String groups) {
             this.groups = groups;
         }
+
         public String getPeople() {
             return people;
         }
+
         public void setPeople(String people) {
             this.people = people;
         }
@@ -109,10 +121,8 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
     }
 
     @Override
-    public void loadState(State persistentState) {
-        if (null != persistentState) {
-            XmlSerializerUtil.copyBean(persistentState, this.state);
-        }
+    public void loadState(@NotNull State persistentState) {
+        XmlSerializerUtil.copyBean(persistentState, this.state);
     }
 
     /******* implement from Configurable *********/
@@ -158,7 +168,7 @@ public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardS
 
     @SuppressWarnings("Duplicates")
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         State persistentState = ReviewBoardSetting.getInstance().getState();
         if (null == persistentState) {
             persistentState = new State();

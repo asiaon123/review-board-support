@@ -1,0 +1,24 @@
+= Review Board Support Plugin for IntelliJ IDEA
+
+Helping submit review request to review board server from IDEA directly.
+
+=== [red big]#ATTENTION!#
+
+Duo to compability issue of official API, Please remove old plugin [`Review Board Suppor(IDEA &lt; 2018)`], and install the newly released version [`Review Board Support`]
+
+=== Prerequisite
+
+* review board version (Web API &gt;= `2.0`)
+* IntelliJ IDEA version (`181.2218[2018] ~`)
+
+=== Features
+
+* Pre-commit review request to review board server
+* Auto review for some users
+* Support all Jetbrins series products, include `IntelliJ IDEA`, `PhpStorm`, `WebStorm`, `PyCharm`, `RubyMine`, `AppCode`, `CLion`, `GoLand`, `DataGrip`, `Rider`, `MPS`, `Android Studio`
+
+=== How to install
+
+Download directly from plugin repository.
+
+Find repository at `File` -&gt; `Settings` -&gt; `Plugins`, and typing in `Review Board Support`

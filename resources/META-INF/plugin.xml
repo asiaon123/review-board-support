@@ -10,6 +10,10 @@
     <depends>Git4Idea</depends>
 
     <description><![CDATA[
+        <h4>Atention:</h4>
+        <ul>
+            <li>Remove the old version that not compatible with the IDEA 2018</li>
+        </ul>
         <h4>Features:</h4>
         <ul>
             <li>Support Subversion, Git</li>
@@ -31,7 +35,7 @@
     <change-notes><![CDATA[
         <h4>2.0</h4>
             <ol>
-                <li>Fix compability to jetbrains series version 2018</li>
+                <li>Fix compability to jetbrains version of 2018</li>
             </ol>
         <h4>1.5</h4>
             <ol>
@@ -43,30 +47,6 @@
                 <li>1.x only suppourt IDEA that version is less than 181.2218(2018)</li>
                 <li>Add image to commit action</li>
             </ol>
-        <h4>1.3</h4>
-            <ol>
-                <li>Some ui changes</li>
-                <li>Available for plugin repository</li>
-            </ol>
-        <h4>1.2</h4>
-            <ol>
-                <li>Fix authentication issue for review board version 2.5+</li>
-                <li>Chang auto review trigger code to `ar`</li>
-                <li>Support post action support in both editor view and project view</li>
-            </ol>
-        <h4>1.1.1</h4>
-            <ol>
-                <li>Bug fix and some optimizations</li>
-                <li>Auto review trigger code is changing to "bang"</li>
-            </ol>
-        <h4>1.1.0</h4>
-            <ol>
-                <li>"Bang" function online now(for some users@lvmama)</li>
-            </ol>
-        <h4>1.0.0</h4>
-            <ol>
-                <li>First release</li>
-            </ol>
     ]]>
     </change-notes>
 
@@ -76,11 +56,11 @@
     </extensions>
 
     <actions>
-        <action id="ReviewAction"
+        <action id="PreCommitAction"
                 class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction"
                 text="Pre-commit"
                 icon="/icons/logo.png"
-                description="Pre-commit action">
+                description="Pre-commit a review request to review board server">
             <add-to-group group-id="ChangesViewPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
