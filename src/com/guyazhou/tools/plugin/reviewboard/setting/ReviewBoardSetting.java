@@ -18,8 +18,8 @@ import javax.swing.*;
  * Created by YaZhou.Gu on 2017/1/2.
  */
 @State(
-        name = "com.guyazhou.tools.plugin.reviewboard.setting",
-        storages = {@Storage("review-board-support.xml")}
+        name = "com.guyazhou.tools.plugin.ReviewBoardSetting",
+        storages = {@Storage("rbs.xml")}
 )
 public class ReviewBoardSetting implements PersistentStateComponent<ReviewBoardSetting.State>, Configurable {
 

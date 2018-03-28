@@ -1,11 +1,9 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn;
 
 import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
-import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.diff.impl.patch.FilePatch;
 import com.intellij.openapi.diff.impl.patch.UnifiedDiffWriter;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.BuildNumber;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
@@ -14,14 +12,11 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.VersionUtil;
-import com.sun.webkit.plugin.PluginManager;
-import org.apache.maven.model.PluginManagement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.svn.SvnUtil;
 import org.jetbrains.idea.svn.SvnVcs;
-import org.jetbrains.idea.svn.api.Url;
+import org.tmatesoft.svn.core.SVNURL;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +63,11 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
             if (null != virtualFile) {
                 virtualFile.refresh(false, true);   // refresh file synchronously adv. synchronize v.
 
-                File workingCopyRoot = SvnUtil.getWorkingCopyRoot(new File(virtualFile.getPath()));
+                File workingCopyRoot = SvnUtil.getWorkingCopyRoot( new File(virtualFile.getPath()) );
+                // compatible with v1.8
+                if (null == workingCopyRoot) {
+                    workingCopyRoot = SvnUtil.getWorkingCopyRootNew( new File(virtualFile.getPath()) );
+                }
                 if(null == workingCopyRoot) {
                     throw new Exception("Can not get working copy root of file(s)");
                 }
@@ -77,15 +76,12 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
                 }
 
                 SvnVcs svnVcs = (SvnVcs) this.abstractVcs;
-                Url remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
-
-//                BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
-
+                SVNURL remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
                 if (null != remoteRootSVNURL && null == remoteRootURL) {    // only one time too?
                     remoteRootURL = remoteRootSVNURL.toString();
                 }
 
-                Url repositoryRootSVNURL = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
+                SVNURL repositoryRootSVNURL = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
                 if (null != repositoryRootSVNURL && null == repositoryURL) {    // only one time
                     repositoryURL = repositoryRootSVNURL.toString();
                 }
