@@ -15,7 +15,8 @@ import javax.swing.*;
 
 /**
  * ReviewBoard setting
- * Created by YaZhou.Gu on 2017/1/2.
+ *
+ * @author YaZhou.Gu 2017/1/2
  */
 @State(
         name = "com.guyazhou.tools.plugin.reviewboard.setting",

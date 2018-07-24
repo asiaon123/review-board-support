@@ -9,7 +9,8 @@ import java.awt.event.ActionListener;
 
 /**
  * ReviewBoardSetting Form
- * Created by Yakov on 2017/1/7.
+ *
+ * @author YaZhou.Gu 2017/1/7.
  */
 public class ReviewBoardSettingForm {
 
@@ -81,7 +82,7 @@ public class ReviewBoardSettingForm {
         }
         try {
             String response = ReviewBoardClient.login(serverURL + "api/", username, password);
-            return !(null == response || "".equals(response));
+            return !"".equals(response);
         } catch (Exception e) {
             throw new Exception("Login failed!\r\n[ " + e.getMessage() + " ]");
         }

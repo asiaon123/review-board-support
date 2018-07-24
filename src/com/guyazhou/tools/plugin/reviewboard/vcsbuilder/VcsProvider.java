@@ -4,11 +4,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.List;
+
 /**
  * VCS Builder
- * Created by Yakov on 2016/12/28.
+ * @author YaZhou.Gu
  */
-public interface VCSBuilder {
+public interface VcsProvider {
 
     /**
      * Get vcs
@@ -21,7 +23,7 @@ public interface VCSBuilder {
      * @param project current project
      * @param virtualFiles selected files
      */
-    void build(Project project, VirtualFile[] virtualFiles) throws Exception;
+    void build(Project project, List<VirtualFile> virtualFiles) throws Exception;
 
     /**
      * Get diff string

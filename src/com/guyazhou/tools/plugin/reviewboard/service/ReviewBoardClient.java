@@ -23,7 +23,8 @@ import java.util.Map;
 
 /**
  * ReviewBoard client
- * Created by Yakov on 2017/1/2.
+ *
+ * @author YaZhou.Gu 2017/1/2
  */
 public class ReviewBoardClient {
 
@@ -291,7 +292,7 @@ public class ReviewBoardClient {
             } catch (Exception e) {
                 throw new Exception("Companion login failed, " + e.getMessage());
             }
-            if ( null == cookie || "".equals(cookie) ) {
+            if ("".equals(cookie)) {
                 throw new Exception("Companion cookie is empty");
             }
             headers.put("Cookie", cookie);

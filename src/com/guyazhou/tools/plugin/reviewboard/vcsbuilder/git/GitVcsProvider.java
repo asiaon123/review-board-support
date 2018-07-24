@@ -1,6 +1,6 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.git;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
@@ -12,23 +12,23 @@ import git4idea.commands.GitCommand;
 import git4idea.commands.GitSimpleHandler;
 import git4idea.repo.GitRepository;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Git builder
  * Created by Yakov on 2016/12/28.
  */
-public class GitVCSBuilder extends AbstractVCSBuilder {
+public class GitVcsProvider extends AbstractVcsProvider {
 
     private VirtualFile workingCopy;
 
 
-    public GitVCSBuilder(AbstractVcs abstractVcs) {
+    public GitVcsProvider(AbstractVcs abstractVcs) {
         super(abstractVcs);
     }
 
     @Override
-    protected void setRepositoryRootAndWorkingCopyPath(Project project, VirtualFile[] virtualFiles) throws Exception {
+    protected void setRepositoryRootAndWorkingCopyPath(Project project, List<VirtualFile> virtualFiles) throws Exception {
 
         for (VirtualFile virtualFile : virtualFiles) {
             if (null != virtualFile) {
@@ -44,7 +44,7 @@ public class GitVCSBuilder extends AbstractVCSBuilder {
     }
 
     @Override
-    protected String generateDifferences(Project project, VirtualFile[] virtualFiles) throws Exception {
+    protected String generateDifferences(Project project, List<VirtualFile> virtualFiles) throws Exception {
         try {
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 public void run() {
@@ -56,7 +56,7 @@ public class GitVCSBuilder extends AbstractVCSBuilder {
             handler.setSilent(true);
             handler.setStdoutSuppressed(true);
             handler.addParameters("--full-index");
-            handler.addRelativeFiles(Arrays.asList(virtualFiles));
+            handler.addRelativeFiles(virtualFiles);
             return handler.run();
         } catch (Exception e) {
             Messages.showWarningDialog("Svn is still in refresh. Please try again later.", "Alter");

@@ -1,11 +1,9 @@
 package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVCSBuilder;
-import com.intellij.openapi.application.ApplicationInfo;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsProvider;
 import com.intellij.openapi.diff.impl.patch.FilePatch;
 import com.intellij.openapi.diff.impl.patch.UnifiedDiffWriter;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.BuildNumber;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
@@ -14,9 +12,6 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.VersionUtil;
-import com.sun.webkit.plugin.PluginManager;
-import org.apache.maven.model.PluginManagement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.svn.SvnUtil;
@@ -36,10 +31,10 @@ import java.util.List;
  * svn builder
  * Created by Yakov on 2016/12/28.
  */
-public class SVNVCSBuilder extends AbstractVCSBuilder {
+public class SvnVcsProvider extends AbstractVcsProvider {
 
 
-    public SVNVCSBuilder(AbstractVcs abstractVcs) {
+    public SvnVcsProvider(AbstractVcs abstractVcs) {
         super(abstractVcs);
     }
 
@@ -48,7 +43,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
      * @param virtualFiles selected files
      */
     @Override
-    protected void setRepositoryRootAndWorkingCopyPath(Project project, VirtualFile[] virtualFiles) throws Exception {
+    protected void setRepositoryRootAndWorkingCopyPath(Project project, List<VirtualFile> virtualFiles) throws Exception {
 
         /*
          * Reference info
@@ -120,7 +115,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
      * @throws Exception exception
      */
     @Override
-    protected String generateDifferences(Project project, VirtualFile[] virtualFiles) throws Exception {
+    protected String generateDifferences(Project project, List<VirtualFile> virtualFiles) throws Exception {
         List<Change> changeList = getChangeList(project, virtualFiles);
         List<FilePatch> filePatchList;
         try {
@@ -147,7 +142,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
      * @param virtualFiles virtual files
      * @return change list
      */
-    private List<Change> getChangeList(Project project, VirtualFile[] virtualFiles) {
+    private List<Change> getChangeList(Project project, List<VirtualFile> virtualFiles) {
         List<Change> changeList = new ArrayList<>();
         ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         for (VirtualFile virtualFile : virtualFiles) {
@@ -207,7 +202,7 @@ public class SVNVCSBuilder extends AbstractVCSBuilder {
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new Exception("BuildPatch method invocation error, " + e.getMessage());
         }
-        if (null != object && object instanceof List) {
+        if (object instanceof List) {
             return (List<FilePatch>) object;
         }
         return null;

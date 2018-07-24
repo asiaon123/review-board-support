@@ -61,7 +61,7 @@ public class SubmitDialogForm extends DialogWrapper {
         }
     }
 
-    protected SubmitDialogForm(@Nullable Project project, String commitMessage, String patch, Repository[] repositories, int possibleRepositoryIndex) {
+    protected SubmitDialogForm(@Nullable Project project, String patch, Repository[] repositories, int possibleRepositoryIndex) {
         super(project);
 
         // initialize

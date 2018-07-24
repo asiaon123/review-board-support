@@ -1,14 +1,16 @@
-package com.guyazhou.tools.plugin.reviewboard.action;
+package com.guyazhou.tools.plugin.reviewboard.actions;
 
+import com.guyazhou.tools.plugin.reviewboard.exceptions.InvalidArgumentException;
+import com.guyazhou.tools.plugin.reviewboard.exceptions.InvalidFileException;
 import com.guyazhou.tools.plugin.reviewboard.forms.SubmitDialogForm;
-import com.guyazhou.tools.plugin.reviewboard.http.HttpClient;
+import com.guyazhou.tools.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.Repository;
 import com.guyazhou.tools.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
-import com.guyazhou.tools.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilder;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VCSBuilderFactory;
+import com.guyazhou.tools.plugin.reviewboard.ui.DialogUtil;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VcsProviderFactory;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -20,6 +22,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.util.PopupUtil;
@@ -31,84 +34,120 @@ import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
+import javax.swing.text.BadLocationException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Review action
- * Created by Yakov on 2016/12/26.
+ * @author YaZhou.Gu
  */
 public class ReviewAction extends AnAction {
-
-    private String changeMessage;
 
     @Override
     public void actionPerformed(AnActionEvent event) {
 
-        Project project = event.getData(PlatformDataKeys.PROJECT);
+        Project currentProject = event.getProject();
 
+        if (currentProject == null) {
+            throw new IllegalArgumentException("Can not get project");
+        }
+
+        // Get the selected files
+        // FIXME Can not get the deleted file(s)
         VirtualFile[] virtualFiles = event.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY);
-        if (null == virtualFiles || 0 == virtualFiles.length) {
-            Messages.showWarningDialog("Please select the file(s) you want to review!", "Warning");
-            return;
-        }
 
-        assert project != null;
-        AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(virtualFiles[0]);
-        // verify selected files are under the same VCS.
-        if ( !ProjectLevelVcsManager.getInstance(project).checkAllFilesAreUnder(abstractVcs, virtualFiles) ) {
-            Messages.showErrorDialog("Some files are not under control of VCS!", "Error");
-            return;
-        }
+        // Get selected virtual files
+        ChangeListManager changeListManager = ChangeListManager.getInstance(currentProject);
+        // Process the virtual files
+        Map<AbstractVcs, List<VirtualFile>> resultVirtualFilesMap = processVirtualFiles(currentProject, changeListManager, virtualFiles);
 
-        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
-        LocalChangeList localChangeList;
-        for (VirtualFile virtualFile : virtualFiles) {
-            if (virtualFile.isDirectory()) {
-                Messages.showWarningDialog("Only file type is permitted, please remove directory!", "Warning");
-                return;
-            }
-            localChangeList = changeListManager.getChangeList(virtualFile);
-            if (null == localChangeList) {
-                Messages.showWarningDialog("File ( " + virtualFile.getName() + " ) is not changed!", "Warning");
-                return;
-            } else {
-                changeMessage = localChangeList.getName();  // ??
-            }
-        }
+        // Retrive vcs info
+        for (Map.Entry<AbstractVcs, List<VirtualFile>> abstractVcsListEntry : resultVirtualFilesMap.entrySet()) {
 
-        changeListManager.invokeAfterUpdate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    assert abstractVcs != null;
-                    VCSBuilder vcsBuilder = VCSBuilderFactory.getVCSBuilder(abstractVcs);
-                    if (null != vcsBuilder) {
-                        execute(project, vcsBuilder, virtualFiles);
+            AbstractVcs finalAbstractVcs = abstractVcsListEntry.getKey();
+            changeListManager.invokeAfterUpdate(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        VcsProvider vcsProvider = VcsProviderFactory.getVcsProvider(finalAbstractVcs);
+                        execute(currentProject, vcsProvider, abstractVcsListEntry.getValue());
+                    } catch (Exception e) {
+                        Messages.showErrorDialog(e.getMessage(), "Error");
                     }
-                } catch (Exception e) {
-                    Messages.showErrorDialog(e.getMessage(), "Error");
+                }
+            }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "Refreshing VCS...", ModalityState.current());
+
+        }
+
+    }
+
+    private Map<AbstractVcs, List<VirtualFile>> processVirtualFiles(Project project, ChangeListManager changeListManager, VirtualFile[] expectedVirtualFiles) {
+        Map<AbstractVcs, List<VirtualFile>> resultVirtualFilesMap = new HashMap<>();
+
+        if (null == expectedVirtualFiles || 0 == expectedVirtualFiles.length) {
+            Messages.showWarningDialog("Please select the file(s) you want to review!", "Warning");
+            throw new InvalidArgumentException("Not Found");
+        }
+
+        for (VirtualFile expectedVirtualFile : expectedVirtualFiles) {
+            // Ignore directory
+            if (expectedVirtualFile.isDirectory()) {
+                continue;
+            }
+
+            // Check if the file is in change list
+            LocalChangeList localChangeList = changeListManager.getChangeList(expectedVirtualFile);
+            if (null == localChangeList) {
+                throw new InvalidFileException(String.format("No changelist detected for file: [ %s ] in local changes, " +
+                        "Making some changes or adding it to vcs", expectedVirtualFile.getName()));
+            }
+
+            //
+            AbstractVcs abstractVcs = ProjectLevelVcsManager.getInstance(project).getVcsFor(expectedVirtualFile);
+            if (resultVirtualFilesMap.containsKey(abstractVcs)) {
+                resultVirtualFilesMap.get(abstractVcs).add(expectedVirtualFile);
+            } else {
+                List<VirtualFile> virtualFileList = new ArrayList<>();
+                virtualFileList.add(expectedVirtualFile);
+                resultVirtualFilesMap.put(abstractVcs, virtualFileList);
+            }
+        }
+        // Currently, we support only one vcs one time
+        if (resultVirtualFilesMap.entrySet().size() > 1) {
+            StringBuilder sb = new StringBuilder("Multiple vcs [ ");
+            for (AbstractVcs abstractVcs : resultVirtualFilesMap.keySet()) {
+                if (abstractVcs == null) {
+                    sb.append("unversioned,");
+                } else {
+                    sb.append(abstractVcs.getName()).append(",");
                 }
             }
-        }, InvokeAfterUpdateMode.SYNCHRONOUS_CANCELLABLE, "Refreshing VCS...", ModalityState.current());
-
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append(" ] found, only one supported one time, please submit seperately");
+            throw new InvalidFileException(sb.toString());
+        }
+        return resultVirtualFilesMap;
     }
 
     /**
      * Show form and submit to review board
      * @param project current project
-     * @param vcsBuilder vcsBuilder
+     * @param vcsProvider vcsProvider
      * @param virtualFiles selected files
      * @throws Exception io
      */
-    private void execute(final Project project, final VCSBuilder vcsBuilder, VirtualFile[] virtualFiles) throws Exception {
+    private void execute(Project project, VcsProvider vcsProvider, List<VirtualFile> virtualFiles) throws Exception {
 
         try {
-            vcsBuilder.build(project, virtualFiles);
+            vcsProvider.build(project, virtualFiles);
         } catch (Exception e) {
             throw new Exception("Build VCS error, " + e.getMessage());
         }
 
-        String diff = vcsBuilder.getDifferences();
+        String diff = vcsProvider.getDifferences();
         if (null == diff) {
             throw new Exception("No differences detected!");
         }
@@ -128,7 +167,7 @@ public class ReviewAction extends AnAction {
         }
         Repository[] repositories = repositoryResponse.getRepositories();
         if (null != repositories) {
-            this.showPostForm(project, vcsBuilder, repositories);
+            this.showPostForm(project, vcsProvider, repositories);
         }
 
     }
@@ -136,14 +175,14 @@ public class ReviewAction extends AnAction {
     /**
      * Show post Form
      * @param project current project
-     * @param vcsBuilder VCS builder
+     * @param vcsProvider VCS builder
      * @param repositories repositories
      */
-    private void showPostForm(Project project, VCSBuilder vcsBuilder, Repository[] repositories) {
+    private void showPostForm(Project project, VcsProvider vcsProvider, Repository[] repositories) {
 
-        int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsBuilder.getRepositoryURL(), repositories);
+        int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsProvider.getRepositoryURL(), repositories);
 
-        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project, changeMessage, "what?", repositories, possibleRepositoryIndex) {
+        SubmitDialogForm submitDialogForm = new SubmitDialogForm(project, "what?", repositories, possibleRepositoryIndex) {
 
             @Override
             protected void doOKAction() {
@@ -165,13 +204,13 @@ public class ReviewAction extends AnAction {
                 reviewParams.setPerson(this.getPeople());
                 reviewParams.setDescription(this.getDescription());
                 reviewParams.setRepositoryId( String.valueOf(this.getSelectedRepositoryId()) );
-                if (null == vcsBuilder.getWorkingCopyPathInRepository()) {
+                if (null == vcsProvider.getWorkingCopyPathInRepository()) {
                     reviewParams.setSvnBasePath("");
                 } else {
-                    reviewParams.setSvnBasePath(vcsBuilder.getWorkingCopyPathInRepository());
+                    reviewParams.setSvnBasePath(vcsProvider.getWorkingCopyPathInRepository());
                 }
-                reviewParams.setSvnRoot(vcsBuilder.getRepositoryURL());
-                reviewParams.setDiff(vcsBuilder.getDifferences());
+                reviewParams.setSvnRoot(vcsProvider.getRepositoryURL());
+                reviewParams.setDiff(vcsProvider.getDifferences());
 
                 this.addTextToHistory();
 
@@ -216,36 +255,53 @@ public class ReviewAction extends AnAction {
 
                             int selectedValue;  // YES=0, NO=1
                             if (isAutoReview) {
-                                String autoReviewInfoMsg = "Congratulations! submit success.\r\n" +
-                                        "the review URL is " + reviewURL.toString() + "\r\n" +
-                                        "auto review now?";
-                                selectedValue = Messages.showYesNoDialog(autoReviewInfoMsg, "Success!", "Auto review", "No", Messages.getInformationIcon());
-                                if (Messages.YES == selectedValue) {
-                                    ReviewBoardClient reviewBoardClient;
-                                    try {
-                                        reviewBoardClient = new ReviewBoardClient();
-                                    } catch (Exception e) {
-                                        Messages.showErrorDialog(e.getMessage(), "Auto Review Fails");
-                                        return;
-                                    }
-                                    Boolean isAutoReviewSuccess = false;
-                                    try {
-                                        isAutoReviewSuccess = reviewBoardClient.autoReview(reviewParams.getReviewId());
-                                    } catch (Exception e) {
-                                        Messages.showErrorDialog(e.getMessage(), "Auto Review Error");
-                                    }
-                                    if (isAutoReviewSuccess) {
-                                        Messages.showInfoMessage("Auto review successfully, reviewId: " + reviewParams.getReviewId(), "Auto Review Success");
-                                    } else {
-                                        String errorInfoMsg = "Sorry! auto review fails, please review it yourself!\r\n" +
-                                                "the review URL is " + reviewURL.toString() + "\r\n" +
-                                                "Jump to the review page now?";
-                                        selectedValue = Messages.showYesNoDialog(errorInfoMsg, "Error!", "Jump now", "No", Messages.getInformationIcon());
-                                        if (Messages.YES == selectedValue) {
-                                            BrowserUtil.browse(reviewURL.toString());
+
+                                String autoReviewMessage = String.format("<html>Congratulations! submit success<br/>the review URL is: %s<br/>auto review now?</html>", reviewURL.toString());
+
+                                int result = DialogUtil.showConfirmDialog(Messages.getInformationIcon(), "testUtil", autoReviewMessage, "ok", "cancel");
+                                switch (result) {
+                                    // 0
+                                    case DialogWrapper.OK_EXIT_CODE:
+                                        ReviewBoardClient reviewBoardClient;
+                                        try {
+                                            reviewBoardClient = new ReviewBoardClient();
+                                        } catch (Exception e) {
+                                            Messages.showErrorDialog(e.getMessage(), "Auto Review Fails");
+                                            return;
                                         }
-                                    }
+                                        Boolean isAutoReviewSuccess = false;
+                                        try {
+                                            isAutoReviewSuccess = reviewBoardClient.autoReview(reviewParams.getReviewId());
+                                        } catch (Exception e) {
+                                            Messages.showErrorDialog(e.getMessage(), "Auto Review Error");
+                                        }
+                                        if (isAutoReviewSuccess) {
+                                            try {
+                                                DialogUtil.showInfoDialog(Messages.getInformationIcon(), "Success",
+                                                        String.format("<html>Auto review successfully, reviewId: %s</html>", reviewParams.getReviewId()));
+                                            } catch (BadLocationException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        } else {
+                                            String errorInfoMsg = "Sorry! auto review fails, please review it yourself!\r\n" +
+                                                    "the review URL is " + reviewURL.toString() + "\r\n" +
+                                                    "Jump to the review page now?";
+                                            result = DialogUtil.showConfirmDialog(Messages.getInformationIcon(), "Error!", autoReviewMessage, "ok", "cancel");
+                                            selectedValue = Messages.showYesNoDialog(errorInfoMsg, "Error!", "Jump now", "No", Messages.getInformationIcon());
+                                            if (Messages.YES == selectedValue) {
+                                                BrowserUtil.browse(reviewURL.toString());
+                                            }
+                                        }
+                                        break;
+                                    // 1
+                                    case DialogWrapper.CANCEL_EXIT_CODE:
+
+                                        break;
+                                    default:
+
                                 }
+
                             } else {
                                 // Reports it's more efficient than StringBuilder/StringBuffer?
                                 String successInfoMsg = "Congratulations! submit success.\r\n" +

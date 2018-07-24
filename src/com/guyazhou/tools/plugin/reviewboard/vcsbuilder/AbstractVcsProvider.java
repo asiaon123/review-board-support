@@ -11,7 +11,7 @@ import java.util.List;
  * VCS抽象方法
  * Created by Yakov on 2016/12/30.
  */
-public abstract class AbstractVCSBuilder implements VCSBuilder {
+public abstract class AbstractVcsProvider implements VcsProvider {
 
     protected AbstractVcs abstractVcs;
     protected String differences;
@@ -25,7 +25,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * Set vcs
      * @param abstractVcs vcs
      */
-    protected AbstractVCSBuilder(AbstractVcs abstractVcs) {
+    protected AbstractVcsProvider(AbstractVcs abstractVcs) {
         this.abstractVcs = abstractVcs;
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * @param virtualFiles selected files
      */
     @Override
-    public void build(Project project, VirtualFile[] virtualFiles) throws Exception {
+    public void build(Project project, List<VirtualFile> virtualFiles) throws Exception {
         try {
             this.setRepositoryRootAndWorkingCopyPath(project, virtualFiles);
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * @param project project
      * @param virtualFiles selected files
      */
-    protected abstract void setRepositoryRootAndWorkingCopyPath(Project project, VirtualFile[] virtualFiles) throws Exception;
+    protected abstract void setRepositoryRootAndWorkingCopyPath(Project project, List<VirtualFile> virtualFiles) throws Exception;
 
     /**
      * Generate differences between local and remote repository
@@ -82,6 +82,6 @@ public abstract class AbstractVCSBuilder implements VCSBuilder {
      * @param virtualFiles virtural files
      * @return diff string
      */
-    protected abstract String generateDifferences(Project project, VirtualFile[] virtualFiles) throws Exception;
+    protected abstract String generateDifferences(Project project, List<VirtualFile> virtualFiles) throws Exception;
 
 }

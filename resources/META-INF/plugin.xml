@@ -57,7 +57,7 @@
 
     <actions>
         <action id="PreCommitAction"
-                class="com.guyazhou.tools.plugin.reviewboard.action.ReviewAction"
+                class="com.guyazhou.tools.plugin.reviewboard.actions.ReviewAction"
                 text="Pre-commit"
                 icon="/icons/logo.png"
                 description="Pre-commit a review request to review board server">
