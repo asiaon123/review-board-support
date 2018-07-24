@@ -88,6 +88,7 @@ public class ReviewAction extends AnAction {
         Map<AbstractVcs, List<VirtualFile>> resultVirtualFilesMap = new HashMap<>();
 
         if (null == expectedVirtualFiles || 0 == expectedVirtualFiles.length) {
+
             Messages.showWarningDialog("Please select the file(s) you want to review!", "Warning");
             throw new InvalidArgumentException("Not Found");
         }
