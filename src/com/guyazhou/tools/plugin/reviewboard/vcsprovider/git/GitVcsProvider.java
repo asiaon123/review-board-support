@@ -1,6 +1,6 @@
-package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.git;
+package com.guyazhou.tools.plugin.reviewboard.vcsprovider.git;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.AbstractVcsProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;

@@ -9,8 +9,8 @@ import com.guyazhou.tools.plugin.reviewboard.model.repository.RepositoryResponse
 import com.guyazhou.tools.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.tools.plugin.reviewboard.ui.DialogUtil;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VcsProvider;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.VcsProviderFactory;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.VcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.VcsProviderFactory;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;

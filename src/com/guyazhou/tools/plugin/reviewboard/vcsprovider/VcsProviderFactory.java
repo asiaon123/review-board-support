@@ -1,8 +1,8 @@
-package com.guyazhou.tools.plugin.reviewboard.vcsbuilder;
+package com.guyazhou.tools.plugin.reviewboard.vcsprovider;
 
 import com.guyazhou.tools.plugin.reviewboard.exceptions.NoVcsProviderFoundException;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.git.GitVcsProvider;
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn.SvnVcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.git.GitVcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.svn.SvnVcsProvider;
 import com.intellij.openapi.vcs.AbstractVcs;
 
 import java.lang.reflect.Constructor;

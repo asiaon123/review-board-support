@@ -1,6 +1,6 @@
-package com.guyazhou.tools.plugin.reviewboard.vcsbuilder.svn;
+package com.guyazhou.tools.plugin.reviewboard.vcsprovider.svn;
 
-import com.guyazhou.tools.plugin.reviewboard.vcsbuilder.AbstractVcsProvider;
+import com.guyazhou.tools.plugin.reviewboard.vcsprovider.AbstractVcsProvider;
 import com.intellij.openapi.diff.impl.patch.FilePatch;
 import com.intellij.openapi.diff.impl.patch.UnifiedDiffWriter;
 import com.intellij.openapi.project.Project;
