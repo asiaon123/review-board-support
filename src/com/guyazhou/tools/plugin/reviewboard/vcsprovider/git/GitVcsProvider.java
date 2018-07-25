@@ -8,8 +8,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vfs.VirtualFile;
 import git4idea.GitUtil;
-import git4idea.commands.GitCommand;
-import git4idea.commands.GitSimpleHandler;
+import git4idea.commands.*;
 import git4idea.repo.GitRepository;
 
 import java.util.List;
@@ -46,18 +45,27 @@ public class GitVcsProvider extends AbstractVcsProvider {
     @Override
     protected String generateDifferences(Project project, List<VirtualFile> virtualFiles) throws Exception {
         try {
+            // Save all files first
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 public void run() {
                     FileDocumentManager.getInstance().saveAllDocuments();
                 }
             });
-            GitSimpleHandler handler = new GitSimpleHandler(project, workingCopy, GitCommand.DIFF);
+
+//            GitSimpleHandler handler = new GitSimpleHandler(project, workingCopy, GitCommand.DIFF);
+            GitLineHandler handler = new GitLineHandler(project, workingCopy, GitCommand.DIFF);
             handler.addParameters("HEAD");
             handler.setSilent(true);
             handler.setStdoutSuppressed(true);
             handler.addParameters("--full-index");
             handler.addRelativeFiles(virtualFiles);
-            return handler.run();
+//            return handler.run();
+
+            Git git = Git.getInstance();
+            GitCommandResult gitCommandResult = git.runCommand(handler);
+
+            return gitCommandResult.getOutputAsJoinedString();
+
         } catch (Exception e) {
             Messages.showWarningDialog("Svn is still in refresh. Please try again later.", "Alter");
         }

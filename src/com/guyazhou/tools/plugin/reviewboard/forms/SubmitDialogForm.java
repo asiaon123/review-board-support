@@ -61,7 +61,7 @@ public class SubmitDialogForm extends DialogWrapper {
         }
     }
 
-    protected SubmitDialogForm(@Nullable Project project, String patch, Repository[] repositories, int possibleRepositoryIndex) {
+    public SubmitDialogForm(@Nullable Project project, Repository[] repositories, int possibleRepositoryIndex) {
         super(project);
 
         // initialize
@@ -184,7 +184,7 @@ public class SubmitDialogForm extends DialogWrapper {
     /**
      * Add some field text to history
      */
-    protected void addTextToHistory() {
+    public void addTextToHistory() {
         summaryField.addCurrentTextToHistory();
         groupsFiled.addCurrentTextToHistory();
         peopleField.addCurrentTextToHistory();
@@ -214,7 +214,7 @@ public class SubmitDialogForm extends DialogWrapper {
         return bugfield.getText().trim();
     }
 
-    protected String getGroups() {
+    public String getGroups() {
         return groupsFiled.getText().trim();
     }
 

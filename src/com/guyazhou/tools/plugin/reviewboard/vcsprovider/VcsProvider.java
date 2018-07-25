@@ -23,7 +23,7 @@ public interface VcsProvider {
      * @param project current project
      * @param virtualFiles selected files
      */
-    void build(Project project, List<VirtualFile> virtualFiles) throws Exception;
+    void build(Project project, List<VirtualFile> virtualFiles);
 
     /**
      * Get diff string

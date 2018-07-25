@@ -1,9 +1,9 @@
-<idea-plugin url="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA">
+<idea-plugin url="https://github.com/asiaon123/review-board-support">
     <id>com.guyazhou.tools.plugin.reviewboard</id>
     <name>Review Board Support</name>
     <version>2.0</version>
     <category>TOOLS INTEGRATION</category>
-    <vendor email="asiaon123@gmail.com" url="http://www.guyazhou.com">asiaon123</vendor>
+    <vendor email="asiaon123@gmail.com" url="https://github.com/asiaon123/review-board-support">asiaon123</vendor>
     <idea-version since-build="181.2218"/>
 
     <depends>Subversion</depends>
@@ -21,9 +21,9 @@
         </ul>
         <h4>About:</h4>
         <ul>
-            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/blob/master/README.md">Usage</a></li>
-            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/issues">Issues</a></li>
-            <li><a href="https://github.com/asiaon123/ReviewBoard-Plugin-For-IntelliJ-IDEA/tree/1.x">Source</a></li>
+            <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.md">Usage</a></li>
+            <li><a href="https://github.com/asiaon123/review-board-support/issues">Issues</a></li>
+            <li><a href="https://github.com/asiaon123/review-board-support/tree/1.x">Source</a></li>
         </ul>
         <h4>Thanks:</h4>
         <ul>

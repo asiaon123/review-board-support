@@ -30,7 +30,7 @@ public class HttpClient {
      * @return a HttpURLConnection instance
      * @throws Exception exception
      */
-    private HttpURLConnection buildHttpURLConnection(String urlStr, HTTP_REQUEST_METHOD method) throws Exception {
+    private HttpURLConnection buildHttpURLConnection(String urlStr, HTTP_METHOD method) throws Exception {
         URL url;
         try {
             url = new URL(urlStr);
@@ -45,7 +45,7 @@ public class HttpClient {
             throw new Exception("Open url connection error" + e.getMessage());
         }
 
-        if (HTTP_REQUEST_METHOD.POST == method || HTTP_REQUEST_METHOD.PUT == method) {
+        if (HTTP_METHOD.POST == method || HTTP_METHOD.PUT == method) {
             urlConnection.setDoOutput(true);    // default: false, set true make it possible to get a output stream
         }
 
@@ -104,7 +104,7 @@ public class HttpClient {
      * @throws IOException io
      */
     public String get(String urlStr) throws Exception {
-        HttpURLConnection httpURLConnection = this.buildHttpURLConnection(urlStr, HTTP_REQUEST_METHOD.GET);
+        HttpURLConnection httpURLConnection = this.buildHttpURLConnection(urlStr, HTTP_METHOD.GET);
         // redirect automaticly
         httpURLConnection.setInstanceFollowRedirects(false);
 
@@ -134,7 +134,7 @@ public class HttpClient {
         if (isMultiPart) {
             return this.postWithMultiplePart(urlStr, params);
         } else {
-            return this.requestSimply(urlStr, HTTP_REQUEST_METHOD.POST, params);
+            return this.requestSimply(urlStr, HTTP_METHOD.POST, params);
         }
     }
 
@@ -145,14 +145,14 @@ public class HttpClient {
         if ( 0 == params.size() ) {
             return null;
         }
-        return this.requestSimply(urlStr, HTTP_REQUEST_METHOD.PUT, params);
+        return this.requestSimply(urlStr, HTTP_METHOD.PUT, params);
     }
 
     public String delete(String urlStr, Map<String, Object> params) {
         return null;
     }
 
-    private String requestSimply(String urlStr, HTTP_REQUEST_METHOD method, Map<String, Object> params) throws Exception {
+    private String requestSimply(String urlStr, HTTP_METHOD method, Map<String, Object> params) throws Exception {
 
         HttpURLConnection httpURLConnection = this.buildHttpURLConnection(urlStr, method);
         httpURLConnection.setRequestMethod(method.toString());
@@ -184,7 +184,7 @@ public class HttpClient {
      */
     private String postWithMultiplePart(String urlStr, Map<String, Object> params) throws Exception {
 
-        HTTP_REQUEST_METHOD method = HTTP_REQUEST_METHOD.POST;
+        HTTP_METHOD method = HTTP_METHOD.POST;
         HttpURLConnection httpURLConnection = this.buildHttpURLConnection(urlStr, method);
         httpURLConnection.setRequestMethod(method.toString());
 

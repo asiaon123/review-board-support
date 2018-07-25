@@ -41,16 +41,16 @@ public abstract class AbstractVcsProvider implements VcsProvider {
      * @param virtualFiles selected files
      */
     @Override
-    public void build(Project project, List<VirtualFile> virtualFiles) throws Exception {
+    public void build(Project project, List<VirtualFile> virtualFiles) {
         try {
             this.setRepositoryRootAndWorkingCopyPath(project, virtualFiles);
         } catch (Exception e) {
-            throw new Exception("Get repository root and working copy path error, " + e.getMessage());
+            throw new RuntimeException("Get repository root and working copy path error, " + e.getMessage());
         }
         try {
             this.differences = generateDifferences(project, virtualFiles);
         } catch (Exception e) {
-            throw new Exception("Generate differences error, " + e.getMessage());
+            throw new RuntimeException("Generate differences error, " + e.getMessage());
         }
     }
 
