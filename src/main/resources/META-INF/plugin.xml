@@ -1,10 +1,10 @@
 <idea-plugin url="https://github.com/asiaon123/review-board-support">
-    <id>com.guyazhou.tools.plugin.reviewboard</id>
+    <id>com.guyazhou.plugin.reviewboard</id>
     <name>Review Board Support</name>
     <version>2.0</version>
     <category>TOOLS INTEGRATION</category>
     <vendor email="asiaon123@gmail.com" url="https://github.com/asiaon123/review-board-support">asiaon123</vendor>
-    <idea-version since-build="181.2218"/>
+    <idea-version since-build="145.0"/>
 
     <depends>Subversion</depends>
     <depends>Git4Idea</depends>
@@ -51,13 +51,13 @@
     </change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
-        <applicationConfigurable instance="com.guyazhou.tools.plugin.reviewboard.setting.ReviewBoardSetting"/>
+        <applicationService serviceImplementation="com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting"/>
+        <applicationConfigurable instance="com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting"/>
     </extensions>
 
     <actions>
         <action id="PreCommitAction"
-                class="com.guyazhou.tools.plugin.reviewboard.actions.ReviewAction"
+                class="com.guyazhou.plugin.reviewboard.actions.ReviewAction"
                 text="Pre-commit"
                 icon="/icons/logo.png"
                 description="Pre-commit a review request to review board server">

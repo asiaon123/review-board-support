@@ -27,7 +27,11 @@ intellij {
 }
 
 patchPluginXml {
-    changeNotes """
+    sinceBuild = "145.0"
+    untilBuild = "999.0"
+    version = 3.0
+
+    changeNotes = """
     <h4>2.0</h4>
         <ol>
             <li>Fix compability to jetbrains version of 2018</li>
@@ -43,4 +47,8 @@ patchPluginXml {
             <li>Add image to commit action</li>
         </ol>
       """
+
+    description = """
+        NOT AVAILABLE
+    """
 }
