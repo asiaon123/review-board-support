@@ -29,24 +29,15 @@ public abstract class AbstractVcsProvider implements VcsProvider {
     }
 
     /**
-     * Build
-     * Get repository root, and generate diff
+     * Set some vcs info and generate differeces
      *
      * @param project current project
      * @param virtualFiles selected files
      */
     @Override
     public void build(Project project, List<VirtualFile> virtualFiles) {
-        try {
-            this.setRepositoryRootAndWorkingCopyPath(project, virtualFiles);
-        } catch (Exception e) {
-            throw new RuntimeException("Get repository root and working copy path error, " + e.getMessage());
-        }
-        try {
-            this.differences = generateDifferences(project, virtualFiles);
-        } catch (Exception e) {
-            throw new RuntimeException("Generate differences error, " + e.getMessage());
-        }
+        setRepositoryRootAndWorkingCopyPath(project, virtualFiles);
+        differences = generateDifferences(project, virtualFiles);
     }
 
     @Override

@@ -10,24 +10,16 @@
     <depends>Git4Idea</depends>
 
     <description><![CDATA[
-        <h4>Atention:</h4>
+        <h4>Features</h4>
         <ul>
-            <li>Remove the old version that not compatible with the IDEA 2018</li>
-        </ul>
-        <h4>Features:</h4>
-        <ul>
+            <li>Compatible with both version before and after 2018</li>
             <li>Support Subversion, Git</li>
-            <li>Auto review for users@lvmama.com</li>
+            <li>Auto review for some users@lvmama</li>
         </ul>
-        <h4>About:</h4>
+        <h4>About</h4>
         <ul>
             <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.md">Usage</a></li>
             <li><a href="https://github.com/asiaon123/review-board-support/issues">Issues</a></li>
-            <li><a href="https://github.com/asiaon123/review-board-support/tree/1.x">Source</a></li>
-        </ul>
-        <h4>Thanks:</h4>
-        <ul>
-            <li>@kaneg supports basic code</li>
         </ul>
     ]]>
     </description>

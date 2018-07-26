@@ -2,7 +2,7 @@ package com.guyazhou.plugin.reviewboard.actions;
 
 import com.guyazhou.plugin.reviewboard.exceptions.InvalidArgumentException;
 import com.guyazhou.plugin.reviewboard.exceptions.InvalidFileException;
-import com.guyazhou.plugin.reviewboard.i18n.MessageBundle;
+import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
 import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
 import com.guyazhou.plugin.reviewboard.tasks.PrepareVcsInfoTask;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -34,7 +34,7 @@ public class ReviewAction extends AnAction {
         try {
             Project project = event.getProject();
             if (project == null) {
-                throw new InvalidArgumentException(MessageBundle.getBundle().getString(MessageProperties.PROJECT_NULL));
+                throw new InvalidArgumentException(MessageBundleUtil.getBundle().getString(MessageProperties.PROJECT_NULL));
             }
 
             // FIXME Can not get the deleted file(s), changelist?
@@ -44,9 +44,8 @@ public class ReviewAction extends AnAction {
             for (Map.Entry<AbstractVcs, List<VirtualFile>> abstractVcsListEntry : resultVirtualFilesMap.entrySet()) {
                 ProgressManager.getInstance().run(new PrepareVcsInfoTask(project, abstractVcsListEntry.getKey(), abstractVcsListEntry.getValue()));
             }
-
         } catch (Exception e) {
-            Messages.showErrorDialog(e.getMessage(), MessageBundle.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
+            Messages.showErrorDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
         }
     }
 

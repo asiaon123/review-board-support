@@ -61,23 +61,23 @@ public class ReviewBoardClient {
 
     /**
      * Get cookie
+     *
      * @return cookie value
-     * @throws Exception exception
      */
-    private String getCookie() throws Exception {
+    private String getCookie() {
         if (null == this.cookie) {
             Map<String, String> userInfo;
             try {
                 userInfo = this.loadUserInfo();
             } catch (Exception e) {
-                throw new Exception("Load user info from setting error, " + e.getMessage());
+                throw new RuntimeException("Load user info from setting error, " + e.getMessage());
             }
             if (null == userInfo || 0 == userInfo.size()) {
-                throw new Exception("User info is empty");
+                throw new RuntimeException("User info is empty");
             }
             ReviewBoardSetting.State state = ReviewBoardSetting.getInstance().getState();
             if (null == state) {
-                throw new Exception("Read state error");
+                throw new RuntimeException("Read state error");
             }
             return ReviewBoardClient.login(this.apiURL, userInfo.get("username"), userInfo.get("password"));
         }
@@ -419,24 +419,12 @@ public class ReviewBoardClient {
      * @return all repositories
      */
     public RepositoryResponse getRepositories() {
-
         String path = apiURL + "repositories/";
-        String response;
 
-        String cookie;
-        try {
-            cookie = this.getCookie();
-        } catch (Exception e) {
-            throw new RuntimeException("Get cookie error, " + e.getMessage());
-        }
         Map<String, String> headers = new HashMap<>();
-        headers.put("Cookie", cookie);
+        headers.put("Cookie", this.getCookie());
 
-        try {
-            response = new HttpClient(headers).get(path);
-        } catch (Exception e) {
-            throw new RuntimeException("Get repositories fails, " + e.getMessage());
-        }
+        String response = new HttpClient(headers).get(path);
         Gson gson = new Gson();
         return gson.fromJson(response, RepositoryResponse.class);
     }

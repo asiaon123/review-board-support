@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.guyazhou'
-version '2.0'
+version '3.0'
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -32,6 +32,12 @@ patchPluginXml {
     version = 3.0
 
     changeNotes = """
+    <h4>3.0</h4>
+        <ol>
+            <li>Refactor some code</li>
+            <li>Fix some issue on mac os</li>
+            <li>Fix compability issue between verson before and after 2018</li>
+        </ol>
     <h4>2.0</h4>
         <ol>
             <li>Fix compability to jetbrains version of 2018</li>

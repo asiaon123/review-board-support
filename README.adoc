@@ -1,15 +1,11 @@
-= Review Board Support Plugin for IntelliJ IDEA
+= Review Board Support Plugin for IntelliJ IDEA (as well as JetBrains products)
 
 Helping submit review request to review board server from IDEA directly.
-
-=== [red big]#ATTENTION!#
-
-Duo to compability issue of official API, Please remove old plugin [`Review Board Suppor(IDEA &lt; 2018)`], and install the newly released version [`Review Board Support`]
 
 === Prerequisite
 
 * review board version (Web API &gt;= `2.0`)
-* IntelliJ IDEA version (`181.2218[2018] ~`)
+* IntelliJ IDEA version (`145.0 ~`)
 
 === Features
 

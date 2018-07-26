@@ -29,6 +29,7 @@ public class RepositoryResponse {
 
     /**
      * Repositoty links
+     *
      * self (GET, http://review-server/api/repositories/)
      * create (POST, http://review-server/api/repositories/)
      */

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Vcs provider factoty, support svn, Git now.
+ * Vcs provider factory, support svn, Git now.
  *
  * @author YaZhou.Gu 2016/12/28
  */
@@ -28,16 +28,15 @@ public class VcsProviderFactory {
      * Get the vcs provider for vcs
      *
      * @param abstractVcs abstractVcs
-     * @return a VcsProvider instance
+     * @return a vcs provider instance
      */
     public static VcsProvider getVcsProvider(AbstractVcs abstractVcs) {
         Class<? extends VcsProvider> vcsProviderClazz = vcsProviders.get(abstractVcs.getName());
         if (vcsProviderClazz == null) {
             throw new NullPointerException(String.format("No vcs provider found for [ %s ]", abstractVcs.getName()));
         }
-        Constructor<? extends VcsProvider> vcsProviderClazzConstructor;
         try {
-            vcsProviderClazzConstructor = vcsProviderClazz.getConstructor(AbstractVcs.class);
+            Constructor<? extends VcsProvider> vcsProviderClazzConstructor = vcsProviderClazz.getConstructor(AbstractVcs.class);
             return vcsProviderClazzConstructor.newInstance(abstractVcs);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new NoVcsProviderFoundException(String.format("Can not initialize vcs provider for [ %s ]", vcsProviderClazz.getName()), e);

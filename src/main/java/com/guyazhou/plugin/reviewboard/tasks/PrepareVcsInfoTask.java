@@ -1,9 +1,10 @@
 package com.guyazhou.plugin.reviewboard.tasks;
 
 import com.guyazhou.plugin.reviewboard.forms.SubmitDialogForm;
+import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
+import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
 import com.guyazhou.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.plugin.reviewboard.service.ReviewBoardClient;
-import com.guyazhou.plugin.reviewboard.ui.NotificationUtil;
 import com.guyazhou.plugin.reviewboard.vcsprovider.VcsProvider;
 import com.guyazhou.plugin.reviewboard.vcsprovider.VcsProviderFactory;
 import com.guyazhou.plugin.reviewboard.model.repository.Repository;
@@ -30,7 +31,7 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
     private List<VirtualFile> toBeSubmitedFiles;
 
     public PrepareVcsInfoTask(Project project, AbstractVcs abstractVcs, List<VirtualFile> toBeSubmitedFiles) {
-        super(project, "Fetching Repository Info", true);
+        super(project, "Retriving Repository Info", true);
         this.project = project;
         this.abstractVcs = abstractVcs;
         this.toBeSubmitedFiles = toBeSubmitedFiles;
@@ -49,7 +50,7 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
             RepositoryResponse repositoryResponse = reviewBoardClient.getRepositories();
             Repository[] repositories = repositoryResponse.getRepositories();
             if (repositories == null) {
-                throw new NullPointerException("Repositories is null");
+                throw new NullPointerException("Repositories fetched is null");
             }
 
             int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsProvider.getRepositoryURL(), repositories);
@@ -58,7 +59,8 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
                     .invokeLater(new SubmitDialog(project, repositories, possibleRepositoryIndex, vcsProvider), ModalityState.NON_MODAL);
 
         } catch (Exception e) {
-            NotificationUtil.notifyErrorNotification("Error", e.getMessage(), project);
+//            NotificationUtil.notifyErrorNotification("Error Occured", e.getMessage(), project);
+            Messages.showErrorDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
         }
     }
 
@@ -79,20 +81,21 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
 
         @Override
         public void run() {
-            try {
-                new SubmitDialogForm(project, repositories, possibleRepositoryIndex) {
-                    @Override
-                    protected void doOKAction() {
+            new SubmitDialogForm(project, repositories, possibleRepositoryIndex) {
+                @Override
+                protected void doOKAction() {
+                    try {
                         if (!isOKActionEnabled()) {
                             return;
                         }
-                        ProgressManager.getInstance().run(new SubmitReviewRequestTask(project, this, vcsProvider));
-                        super.doOKAction();
+                    } catch (Exception e) {
+                        Messages.showWarningDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_WARNING));
+                        return;
                     }
-                }.show();
-            } catch (Exception e) {
-                Messages.showWarningDialog(e.getMessage(), "Error");
-            }
+                    ProgressManager.getInstance().run(new SubmitReviewRequestTask(project, this, vcsProvider));
+                    super.doOKAction();
+                }
+            }.show();
         }
     }
 

@@ -1,6 +1,8 @@
 package com.guyazhou.plugin.reviewboard.tasks;
 
 import com.guyazhou.plugin.reviewboard.forms.SubmitDialogForm;
+import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
+import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
 import com.guyazhou.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.plugin.reviewboard.ui.NotificationUtil;
@@ -10,6 +12,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.MessageUtil;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.util.PopupUtil;
 import org.jetbrains.annotations.NotNull;
@@ -61,21 +64,25 @@ public class SubmitReviewRequestTask extends Task.Backgroundable {
         try {
             isSubmitSuccess = new ReviewBoardClient().submitReview(reviewParams, progressIndicator);
         } catch (Exception e) {
-            NotificationUtil.notifyErrorNotification("Error", e.getMessage(), project);
+            NotificationUtil.notifyErrorNotification("Submit Review Error", e.getMessage(), project);
         }
 
     }
 
     @Override
-    public void onSuccess() {
+    public void onCancel() {
+        super.onCancel();
+    }
 
+    @Override
+    public void onSuccess() {
         if (!isSubmitSuccess) {
             return;
         }
 
         ReviewBoardSetting.State persistentState = ReviewBoardSetting.getInstance().getState();
         if (null == persistentState) {
-            PopupUtil.showBalloonForActiveFrame("Review setting state is null, why?", MessageType.ERROR);
+            Messages.showErrorDialog("Review setting state is null, why?", MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_WARNING));
             return;
         }
         String reviewUrl = String.format("%sr/%s", persistentState.getServerURL(), reviewParams.getReviewId());
@@ -89,21 +96,15 @@ public class SubmitReviewRequestTask extends Task.Backgroundable {
         if (autoReview) {
             autoReview(reviewUrl);
         } else {
-            String successInfoMsg = "Congratulations! submit success.\r\n" +
-                    "the review URL is " + reviewUrl + "\r\n" +
-                    "Jump to the review page now?";
-            NotificationUtil.notifyInfomationNotifaction("Success", successInfoMsg, project);
+            String successInfoMsg = String.format("Review ID: %s<br/>Review URL: <a href=\"%s\">%s</a>", reviewParams.getReviewId(), reviewUrl, reviewUrl);
+            NotificationUtil.notifyInfomationNotifaction("Submit Review Successfully", successInfoMsg, project);
         }
 
     }
 
     private void autoReview(String reviewUrl) {
-
-        String autoReviewMessage = String.format("<html>Congratulations! submit success<br/>the review URL is: %s<br/>auto review now?</html>", reviewUrl);
-
-//        int result = DialogUtil.showConfirmDialog(Messages.getInformationIcon(), "testUtil", autoReviewMessage, "ok", "cancel");
-
-        int result = Messages.showYesNoDialog(autoReviewMessage, "Auto Review", "Auto Review", "Cancel", Messages.getQuestionIcon());
+        String autoReviewMessage = String.format("Submit Review Successfully!\nReview URL: %s\nShip it?", reviewUrl);
+        int result = Messages.showYesNoDialog(autoReviewMessage, "Auto Ship?", "Ship It", "No", Messages.getQuestionIcon());
 
 //        UIUtil.invokeAndWaitIfNeeded(new Runnable() {
 //            @Override
@@ -111,24 +112,20 @@ public class SubmitReviewRequestTask extends Task.Backgroundable {
 //            }
 //        });
 
+        String title;
         if (result == Messages.OK) {
             ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
             boolean reviewSuccess = reviewBoardClient.autoReview(reviewParams.getReviewId());
             if (reviewSuccess) {
-                NotificationUtil.notifyInfomationNotifaction("Auto Review Successfully",
-                        String.format("<html>Auto review successfully, reviewId: %s</html>", reviewParams.getReviewId()), project);
+                title = "Auto Review Successfully";
             } else {
-                String errorInfoMsg = "Sorry! auto review fails, please review it yourself!\r\n" +
-                        "the review URL is " + reviewUrl + "\r\n" +
-                        "Jump to the review page now?";
-                NotificationUtil.notifyErrorNotification("Error", errorInfoMsg, project);
+                title = "Auto Review Error";
             }
         } else {
-            // DO not review just show review request info
-            NotificationUtil.notifyInfomationNotifaction("Review Successfully",
-                    String.format("<html>Review successfully, reviewId: %s</html>", reviewParams.getReviewId()), project);
+            title = "Submit Review Successfully";
         }
-
+        NotificationUtil.notifyInfomationNotifaction(title,
+                String.format("Review ID: %s<br/>Review URL: <a href=\"%s\">%s</a>", reviewParams.getReviewId(), reviewUrl, reviewUrl), project);
     }
 
 }

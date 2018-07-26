@@ -59,7 +59,7 @@ public class SvnVcsProvider extends AbstractVcsProvider {
         String remoteRootURL = null;
         String repositoryURL = null;
 
-        for (VirtualFile virtualFile : virtualFiles) {  // Get by turn
+        for (VirtualFile virtualFile : virtualFiles) {
             if (null != virtualFile) {
                 virtualFile.refresh(false, true);   // refresh file synchronously adv. synchronize v.
 
@@ -127,7 +127,8 @@ public class SvnVcsProvider extends AbstractVcsProvider {
     }
 
     /**
-     * Generate differences of svn diff file
+     * Generate differences
+     *
      * @param project current project
      * @param virtualFiles virtural files
      * @return svn diff files content
@@ -135,22 +136,17 @@ public class SvnVcsProvider extends AbstractVcsProvider {
     @Override
     protected String generateDifferences(Project project, List<VirtualFile> virtualFiles) {
         List<Change> changeList = getChangeList(project, virtualFiles);
-        List<FilePatch> filePatchList;
-        try {
-            filePatchList = buildFilePatchList(project, changeList, this.workingCopyDir, false);
-        } catch (Exception e) {
-            throw new RuntimeException("Get file patch list error, " + e.getMessage());
-        }
+        List<FilePatch> filePatchList = buildFilePatchList(project, changeList, this.workingCopyDir, false);
         if (null == filePatchList) {
             throw new RuntimeException("File patch list is null");
         }
-        StringWriter stringWriter = new StringWriter();
         try {
+            StringWriter stringWriter = new StringWriter();
             UnifiedDiffWriter.write(project, filePatchList, stringWriter, "\r\n", null);
             stringWriter.close();
             return stringWriter.toString();
         } catch (IOException e) {
-            throw new RuntimeException("Svn is still in refreshing, please try again later!" + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -212,7 +208,7 @@ public class SvnVcsProvider extends AbstractVcsProvider {
      * @return FilePatches list
      */
     @SuppressWarnings("unchecked")
-    private List<FilePatch> buildFilePatchList(Project project, List<Change> changeList, String workingCopyDir, boolean b) throws Exception {
+    private List<FilePatch> buildFilePatchList(Project project, List<Change> changeList, String workingCopyDir, boolean b) {
         Object object;
         try {
             // invoke api in 10.x
@@ -220,7 +216,7 @@ public class SvnVcsProvider extends AbstractVcsProvider {
             Method method = clz.getMethod("buildPatch", Project.class, Collection.class, String.class, boolean.class);
             object = method.invoke(null, project, changeList, workingCopyDir, b);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new Exception("BuildPatch method invocation error, " + e.getMessage());
+            throw new RuntimeException("BuildPatch method invocation error, " + e.getMessage());
         }
         if (object instanceof List) {
             return (List<FilePatch>) object;
