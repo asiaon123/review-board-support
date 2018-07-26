@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/asiaon123/review-board-support">
-    <id>com.guyazhou.plugin.reviewboard</id>
+    <id>com.guyazhou.tools.plugin.reviewboard</id>
     <name>Review Board Support</name>
-    <version>2.0</version>
+    <version>3.0</version>
     <category>TOOLS INTEGRATION</category>
     <vendor email="asiaon123@gmail.com" url="https://github.com/asiaon123/review-board-support">asiaon123</vendor>
     <idea-version since-build="145.0"/>
@@ -18,7 +18,7 @@
         </ul>
         <h4>About</h4>
         <ul>
-            <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.md">Usage</a></li>
+            <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.adoc">Usage</a></li>
             <li><a href="https://github.com/asiaon123/review-board-support/issues">Issues</a></li>
         </ul>
     ]]>
