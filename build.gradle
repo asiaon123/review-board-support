@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.guyazhou'
-version '3.0'
+version '3.0.1'
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -21,26 +21,28 @@ dependencies {
 }
 
 intellij {
-    version = '2017.3.5'
+    version = '2018.2'
     plugins = ['coverage', 'Svn4Idea', 'Git4Idea']
     pluginName = 'review-board-support'
 }
 
 patchPluginXml {
     sinceBuild = "171.0"
-    untilBuild = "999.0"
-    version = 3.0
+    untilBuild = ""
+    version = version
 
     changeNotes = """
+    <h4>3.0.1</h4>
+        <ol>Fix plugin compatibility verifier</ol>
     <h4>3.0</h4>
         <ol>
             <li>Refactor some code</li>
             <li>Fix some issue on mac os</li>
-            <li>Fix compability issue between verson before and after 2018</li>
+            <li>Fix compatibility issue between verson before and after 2018</li>
         </ol>
     <h4>2.0</h4>
         <ol>
-            <li>Fix compability to jetbrains version of 2018</li>
+            <li>Fix compatibility to jetbrains version of 2018</li>
         </ol>
     <h4>1.5</h4>
         <ol>
