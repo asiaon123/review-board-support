@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.svn.SvnUtil;
 import org.jetbrains.idea.svn.SvnVcs;
+import org.jetbrains.idea.svn.info.Info;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,10 +90,21 @@ public class SvnVcsProvider extends AbstractVcsProvider {
 //                    e.printStackTrace();
 //                }
 
-                remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
-                repositoryRootSVNURL = SvnUtil.getRepositoryRoot(svnVcs, workingCopyRoot);
+                Info info = svnVcs.getInfo(workingCopyRoot);
+                if (null == info) {
+                    throw new RuntimeException("Can not get svn info");
+                }
 
-//                Url remoteRootSVNURL = SvnUtil.getUrl(svnVcs, workingCopyRoot);
+                try {
+                    Method getUrl = info.getClass().getMethod("getURL");
+                    remoteRootSVNURL = getUrl.invoke(info);
+
+                    Method getRepositoryRootSVNURL = info.getClass().getMethod("getRepositoryRootURL");
+                    repositoryRootSVNURL = getRepositoryRootSVNURL.invoke(info);
+
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
 
 //                BuildNumber buildNumber = ApplicationInfo.getInstance().getBuild();
 

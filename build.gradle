@@ -21,13 +21,13 @@ dependencies {
 }
 
 intellij {
-    version = '2018.2'
+    version = '2017.3.5'
     plugins = ['coverage', 'Svn4Idea', 'Git4Idea']
     pluginName = 'review-board-support'
 }
 
 patchPluginXml {
-    sinceBuild = "145.0"
+    sinceBuild = "171.0"
     untilBuild = "999.0"
     version = 3.0
 
