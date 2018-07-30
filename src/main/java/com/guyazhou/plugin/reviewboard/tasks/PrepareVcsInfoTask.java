@@ -60,7 +60,12 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
 
         } catch (Exception e) {
 //            NotificationUtil.notifyErrorNotification("Error Occured", e.getMessage(), project);
-            Messages.showErrorDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
+            ApplicationManager.getApplication().invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Messages.showErrorDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
+                }
+            });
         }
     }
 
