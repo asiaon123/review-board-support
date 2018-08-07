@@ -4,7 +4,8 @@ import java.lang.*;
 
 /**
  * Response
- * Created by Yakov on 2017/1/2.
+ *
+ * YaZhou.Gu 2017/1/2
  */
 public class Response {
 

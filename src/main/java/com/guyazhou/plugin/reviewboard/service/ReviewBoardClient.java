@@ -34,18 +34,10 @@ public class ReviewBoardClient {
      */
     private String apiURL;
 
-    /**
-     * Review board cookie
-     */
-    private String cookie;
-
     public ReviewBoardClient() {
         this.loadApiURL();
     }
 
-    /**
-     * Load api url from setting panel
-     */
     private void loadApiURL() {
         ReviewBoardSetting.State state = ReviewBoardSetting.getInstance().getState();
         if (null == state) {
@@ -65,40 +57,32 @@ public class ReviewBoardClient {
      * @return cookie value
      */
     private String getCookie() {
-        if (null == this.cookie) {
-            Map<String, String> userInfo;
-            try {
-                userInfo = this.loadUserInfo();
-            } catch (Exception e) {
-                throw new RuntimeException("Load user info from setting error, " + e.getMessage());
-            }
-            if (null == userInfo || 0 == userInfo.size()) {
-                throw new RuntimeException("User info is empty");
-            }
-            ReviewBoardSetting.State state = ReviewBoardSetting.getInstance().getState();
-            if (null == state) {
-                throw new RuntimeException("Read state error");
-            }
-            return ReviewBoardClient.login(this.apiURL, userInfo.get("username"), userInfo.get("password"));
+        Map<String, String> userInfo = this.loadUserInfo();
+        if (null == userInfo || 0 == userInfo.size()) {
+            throw new RuntimeException("User info is empty");
         }
-        return this.cookie;
+        ReviewBoardSetting.State state = ReviewBoardSetting.getInstance().getState();
+        if (null == state) {
+            throw new RuntimeException("Read state error");
+        }
+        return ReviewBoardClient.login(this.apiURL, userInfo.get("username"), userInfo.get("password"));
     }
 
     /**
      * Load user info from setting panel
+     *
      * @return user info map
-     * @throws Exception exception
      */
-    private Map<String, String> loadUserInfo() throws Exception {
+    private Map<String, String> loadUserInfo() {
         ReviewBoardSetting.State state = ReviewBoardSetting.getInstance().getState();
         if (null == state) {
-            throw new Exception("Read state error");
+            throw new RuntimeException("Read state error");
         }
         String username = state.getUsername();
         String password = state.getPassword();
         if(null == username || null == password) {
             // TODO pop up login dialog
-            throw new Exception("Username or password is empty");
+            throw new RuntimeException("Username or password is empty");
         }
         Map<String, String> userInfoMap = new HashMap<>();
         userInfoMap.put("username", username);
@@ -211,10 +195,7 @@ public class ReviewBoardClient {
     }
 
     /*
-    POST http://demo.reviewboard.org/api/review-requests/316/reviews/
-
-    ship_it=true&body_top=Ship+It!&public=1
-
+     *  POST http://demo.reviewboard.org/api/review-requests/316/reviews/ship_it=true&body_top=Ship+It!&public=1
      */
 
     /**
@@ -245,46 +226,22 @@ public class ReviewBoardClient {
         params.put("public", "1");
 
         // first person review
-        String cookie;
-        try {
-            cookie = this.getCookie();
-        } catch (Exception e) {
-            throw new RuntimeException("Get cookie error, " + e.getMessage());
-        }
-        headers.put("Cookie", cookie);
+        headers.put("Cookie", this.getCookie());
 
-        String responseJson;
-        try {
-            responseJson = new HttpClient(headers).post(this.apiURL + "review-requests/" + reviewId + "/reviews/", params);
-        } catch (Exception e) {
-            throw new RuntimeException("Post review request fails, " + e.getMessage());
-        }
+        String reviewURL = String.format("%sreview-requests/%s/reviews/", this.apiURL, reviewId);
+        String responseJson = new HttpClient(headers).post(reviewURL, params);
         Gson gson = new Gson();
         Response response = gson.fromJson(responseJson, Response.class);
         if (response.isOK()) {
-
-            // second person
-            try {
-                cookie = ReviewBoardClient.login(this.apiURL, companionUsername, companionPassword);
-            } catch (Exception e) {
-                throw new RuntimeException("Companion login failed, " + e.getMessage());
-            }
-            if ("".equals(cookie)) {
-                throw new RuntimeException("Companion cookie is empty");
-            }
-            headers.put("Cookie", cookie);
-            try {
-                responseJson = new HttpClient(headers).post(this.apiURL + "review-requests/" + reviewId + "/reviews/", params);
-            } catch (Exception e) {
-                throw new RuntimeException("Post review request fails, " + e.getMessage());
-            }
+            // Companion
+            headers.put("Cookie", ReviewBoardClient.login(this.apiURL, companionUsername, companionPassword));
+            responseJson = new HttpClient(headers).post(reviewURL, params);
             response = gson.fromJson(responseJson, Response.class);
             if (response.isOK()) {
                 return true;
             } else {
-                throw new RuntimeException("Second person: " + response.getErr().getCode() + ": " + response.getErr().getMsg());
+                throw new RuntimeException("Companion: " + response.getErr().getCode() + ": " + response.getErr().getMsg());
             }
-
         } else {
             throw new RuntimeException("First Person: " + response.getErr().getCode() + ": " + response.getErr().getMsg());
         }
