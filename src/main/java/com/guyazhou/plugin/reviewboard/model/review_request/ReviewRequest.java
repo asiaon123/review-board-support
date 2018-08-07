@@ -8,8 +8,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * ReviewRequest
- * Created by Yakov on 2017/1/12.
+ * Review Request
+ *
+ * YaZhou.Gu 2017/1/12
  */
 public class ReviewRequest {
 

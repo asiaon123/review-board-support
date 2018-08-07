@@ -4,7 +4,8 @@ import com.guyazhou.plugin.reviewboard.model.Response;
 
 /**
  * New review request response
- * Created by Yakov on 2017/1/12.
+ *
+ * YaZhou.Gu 2017/1/12
  */
 public class ReviewRequestDraft extends Response {
 

@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * HttpClient
  *
- * @author YaZhou.Gu 2017/1/2.
+ * @author YaZhou.Gu 2017/1/2
  */
 public class HttpClient {
 

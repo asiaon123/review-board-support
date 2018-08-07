@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * VCS Builder
+ *
  * @author YaZhou.Gu
  */
 public interface VcsProvider {

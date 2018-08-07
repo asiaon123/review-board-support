@@ -2,7 +2,8 @@ package com.guyazhou.plugin.reviewboard.model;
 
 /**
  * Review board error
- * Created by Yakov on 2017/1/12.
+ *
+ * YaZhou.Gu 2017/1/12
  */
 public class Error {
 

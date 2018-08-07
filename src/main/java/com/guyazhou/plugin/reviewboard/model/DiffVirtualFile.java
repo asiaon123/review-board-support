@@ -2,7 +2,8 @@ package com.guyazhou.plugin.reviewboard.model;
 
 /**
  * Diff virtual file
- * Created by Yakov on 2017/1/3.
+ *
+ * YaZhou.Gu 2017/1/3
  */
 public class DiffVirtualFile {
 

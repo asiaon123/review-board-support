@@ -2,7 +2,8 @@ package com.guyazhou.plugin.reviewboard.model;
 
 /**
  * Review Board Link
- * Created by Yakov on 2017/1/2.
+ *
+ * YaZhou.Gu 2017/1/2
  */
 public class Link {
 

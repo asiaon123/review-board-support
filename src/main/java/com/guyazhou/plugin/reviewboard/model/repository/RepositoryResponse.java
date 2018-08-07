@@ -5,10 +5,11 @@ import com.guyazhou.plugin.reviewboard.model.Link;
 import java.util.Map;
 
 /**
- * RepositoryResponse
+ * Repository Response
+ *
  * Correspond to http://review-server/api/repositories/
  *
- * @author YaZhou.Gu 017/1/4.
+ * @author YaZhou.Gu 2017/1/4
  */
 public class RepositoryResponse {
 

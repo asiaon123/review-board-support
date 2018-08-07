@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 /**
  * ReviewBoardSetting Form
  *
- * @author YaZhou.Gu 2017/1/7.
+ * @author YaZhou.Gu 2017/1/7
  */
 public class ReviewBoardSettingForm {
 

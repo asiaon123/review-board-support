@@ -4,7 +4,8 @@ import com.guyazhou.plugin.reviewboard.model.Response;
 
 /**
  * Draft response
- * Created by Yakov on 2017/1/12.
+ *
+ * YaZhou.Gu on 2017/1/12.
  */
 public class DraftResponse extends Response {
 

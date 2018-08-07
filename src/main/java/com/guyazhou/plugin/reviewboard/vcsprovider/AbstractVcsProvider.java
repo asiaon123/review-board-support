@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Abstract vcs provider
  *
- * @author YaZhou.Gu 2016/12/30.
+ * @author YaZhou.Gu 2016/12/30
  */
 public abstract class AbstractVcsProvider implements VcsProvider {
 
