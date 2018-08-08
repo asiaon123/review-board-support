@@ -5,6 +5,7 @@ import com.guyazhou.plugin.reviewboard.exceptions.InvalidFileException;
 import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
 import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
 import com.guyazhou.plugin.reviewboard.tasks.PrepareVcsInfoTask;
+import com.guyazhou.plugin.reviewboard.utils.JsonUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -16,6 +17,8 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +32,13 @@ import java.util.Map;
  */
 public class ReviewAction extends AnAction {
 
+    private final Logger log = LoggerFactory.getLogger(ReviewAction.class);
+
     @Override
     public void actionPerformed(AnActionEvent event) {
+
+        log.info("=================================================== Submit Review Start ===================================================");
+
         try {
             Project project = event.getProject();
             if (project == null) {
@@ -42,9 +50,17 @@ public class ReviewAction extends AnAction {
             Map<AbstractVcs, List<VirtualFile>> resultVirtualFilesMap = processVirtualFiles(project, virtualFiles);
 
             for (Map.Entry<AbstractVcs, List<VirtualFile>> abstractVcsListEntry : resultVirtualFilesMap.entrySet()) {
+                StringBuilder vfBuilder = new StringBuilder();
+                for (VirtualFile virtualFile : abstractVcsListEntry.getValue()) {
+                    vfBuilder.append(virtualFile.getName()).append("-").append(virtualFile.getPath()).append(", ");
+                }
+                vfBuilder.delete(vfBuilder.length() - 2, vfBuilder.length());
+                log.info(String.format("Retriving vcs [ %s ] of files [ %s ]", abstractVcsListEntry.getKey().getName(), vfBuilder.toString()));
                 ProgressManager.getInstance().run(new PrepareVcsInfoTask(project, abstractVcsListEntry.getKey(), abstractVcsListEntry.getValue()));
             }
         } catch (Exception e) {
+            // log.error will cause error in event log, seperate exception to exception handler
+            log.warn("Error occured while retriving repositories info", e);
             Messages.showErrorDialog(e.getMessage(), MessageBundleUtil.getBundle().getString(MessageProperties.MESSAGE_TITLE_ERROR));
         }
     }

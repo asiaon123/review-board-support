@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.guyazhou'
-version '3.0.2'
+version '3.0.3'
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -32,6 +32,9 @@ patchPluginXml {
     version = version
 
     changeNotes = """
+    <h4>3.0.3</h4>
+        <ol>Fix some bugs and make some improvements</ol>
+        <ol>Add debug log</ol>
     <h4>3.0.2</h4>
         <ol>Fix a bug while showing error dialog for network error</ol>
     <h4>3.0.1</h4>

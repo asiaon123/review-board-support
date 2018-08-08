@@ -1,4 +1,4 @@
-package com.guyazhou.plugin.reviewboard.Utils;
+package com.guyazhou.plugin.reviewboard.utils;
 
 /**
  * LevenshteinDistanceUtil

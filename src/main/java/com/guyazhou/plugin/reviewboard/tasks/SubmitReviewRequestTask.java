@@ -3,24 +3,26 @@ package com.guyazhou.plugin.reviewboard.tasks;
 import com.guyazhou.plugin.reviewboard.forms.SubmitDialogForm;
 import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
 import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
+import com.guyazhou.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.plugin.reviewboard.service.ReviewBoardClient;
 import com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.plugin.reviewboard.ui.NotificationUtil;
 import com.guyazhou.plugin.reviewboard.vcsprovider.VcsProvider;
-import com.guyazhou.plugin.reviewboard.model.ReviewParams;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.MessageUtil;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.popup.util.PopupUtil;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author YaZhou.Gu 2018/7/25
  */
 public class SubmitReviewRequestTask extends Task.Backgroundable {
+
+    private final Logger log = LoggerFactory.getLogger(SubmitReviewRequestTask.class);
 
     private Project project;
     private SubmitDialogForm submitDialogForm;
@@ -31,7 +33,7 @@ public class SubmitReviewRequestTask extends Task.Backgroundable {
     private ReviewParams reviewParams;
 
     SubmitReviewRequestTask(Project project, SubmitDialogForm submitDialogForm, VcsProvider vcsProvider) {
-        super(project, "Submiting Review Request", true);
+        super(project, "Submit Review Request", true);
         this.project = project;
         this.submitDialogForm = submitDialogForm;
         this.vcsProvider = vcsProvider;
@@ -114,18 +116,13 @@ public class SubmitReviewRequestTask extends Task.Backgroundable {
 
         String title;
         if (result == Messages.OK) {
-            ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
-            boolean reviewSuccess = reviewBoardClient.autoReview(reviewParams.getReviewId());
-            if (reviewSuccess) {
-                title = "Auto Review Successfully";
-            } else {
-                title = "Auto Review Error";
-            }
+            ProgressManager.getInstance().run(new AutoShipTask(project, reviewUrl, reviewParams));
         } else {
             title = "Submit Review Successfully";
+            NotificationUtil.notifyInfomationNotifaction(title,
+                    String.format("Review ID: %s<br/>Review URL: <a href=\"%s\">%s</a>", reviewParams.getReviewId(), reviewUrl, reviewUrl), project);
         }
-        NotificationUtil.notifyInfomationNotifaction(title,
-                String.format("Review ID: %s<br/>Review URL: <a href=\"%s\">%s</a>", reviewParams.getReviewId(), reviewUrl, reviewUrl), project);
+
     }
 
 }

@@ -10,7 +10,10 @@ import com.guyazhou.plugin.reviewboard.model.Response;
 import com.guyazhou.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.plugin.reviewboard.model.draft.DraftResponse;
 import com.guyazhou.plugin.reviewboard.model.review_request.ReviewRequestDraft;
+import com.guyazhou.plugin.reviewboard.utils.JsonUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +31,8 @@ import java.util.Map;
  * @author YaZhou.Gu 2017/1/2
  */
 public class ReviewBoardClient {
+
+    private final Logger log = LoggerFactory.getLogger(ReviewBoardClient.class);
 
     /**
      * Review board server url in setting panel
@@ -170,14 +175,8 @@ public class ReviewBoardClient {
         if (null == reviewParams) {
             throw new RuntimeException("Review params is null");
         }
-        String cookie;
-        try {
-            cookie = this.getCookie();
-        } catch (Exception e) {
-            throw new RuntimeException("Get cookie error, " + e.getMessage());
-        }
         Map<String, String> headers = new HashMap<>();
-        headers.put("Cookie", cookie);
+        headers.put("Cookie", this.getCookie());
 
         Map<String, Object> params = new HashMap<>();
         addParam(params, "summary", reviewParams.getSummary());
@@ -204,7 +203,7 @@ public class ReviewBoardClient {
      * @param reviewId review request id
      * @return true if success, otherwise false
      */
-    public Boolean autoReview(String reviewId) {
+    public boolean autoReview(String reviewId) {
 
         // verify second person user info
         ReviewBoardSetting.State persistentState = ReviewBoardSetting.getInstance().getState();
@@ -230,12 +229,14 @@ public class ReviewBoardClient {
 
         String reviewURL = String.format("%sreview-requests/%s/reviews/", this.apiURL, reviewId);
         String responseJson = new HttpClient(headers).post(reviewURL, params);
+        log.info(responseJson);
         Gson gson = new Gson();
         Response response = gson.fromJson(responseJson, Response.class);
         if (response.isOK()) {
             // Companion
             headers.put("Cookie", ReviewBoardClient.login(this.apiURL, companionUsername, companionPassword));
             responseJson = new HttpClient(headers).post(reviewURL, params);
+            log.info(responseJson);
             response = gson.fromJson(responseJson, Response.class);
             if (response.isOK()) {
                 return true;

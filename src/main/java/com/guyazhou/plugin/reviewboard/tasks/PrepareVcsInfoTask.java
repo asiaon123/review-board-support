@@ -18,6 +18,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -26,12 +28,14 @@ import java.util.List;
  */
 public class PrepareVcsInfoTask extends Task.Backgroundable {
 
+    private final Logger log = LoggerFactory.getLogger(PrepareVcsInfoTask.class);
+
     private Project project;
     private AbstractVcs abstractVcs;
     private List<VirtualFile> toBeSubmitedFiles;
 
     public PrepareVcsInfoTask(Project project, AbstractVcs abstractVcs, List<VirtualFile> toBeSubmitedFiles) {
-        super(project, "Retriving Repository Info", true);
+        super(project, "Retrive Repository Info", true);
         this.project = project;
         this.abstractVcs = abstractVcs;
         this.toBeSubmitedFiles = toBeSubmitedFiles;
@@ -40,12 +44,18 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
     @Override
     public void run(@NotNull ProgressIndicator progressIndicator) {
         try {
+            progressIndicator.setText("Detect vcs provider");
             VcsProvider vcsProvider = VcsProviderFactory.getVcsProvider(abstractVcs);
+
+            progressIndicator.setText("Generate diffs");
             vcsProvider.build(project, toBeSubmitedFiles);
-            String diff = vcsProvider.getDifferences();
-            if (null == diff) {
+
+            String diffs = vcsProvider.getDifferences();
+            if (null == diffs) {
                 throw new RuntimeException("No differences detected!");
             }
+
+            progressIndicator.setText("Retrive repositories");
             ReviewBoardClient reviewBoardClient = new ReviewBoardClient();
             RepositoryResponse repositoryResponse = reviewBoardClient.getRepositories();
             Repository[] repositories = repositoryResponse.getRepositories();
@@ -53,7 +63,9 @@ public class PrepareVcsInfoTask extends Task.Backgroundable {
                 throw new NullPointerException("Repositories fetched is null");
             }
 
+            progressIndicator.setText("Find possible repository index");
             int possibleRepositoryIndex = getPossibleRepositoryIndex(vcsProvider.getRepositoryURL(), repositories);
+
             // Show dialog
             ApplicationManager.getApplication()
                     .invokeLater(new SubmitDialog(project, repositories, possibleRepositoryIndex, vcsProvider), ModalityState.NON_MODAL);
