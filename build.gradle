@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.guyazhou'
-version '3.0.3'
+version '3.0.4'
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -32,6 +32,9 @@ patchPluginXml {
     version = version
 
     changeNotes = """
+    <h4>3.0.4</h4>
+        <ol>Temporarily fix the issue of not retriving all repositories that more than 25 totally.</ol>
+        <ol>Some little changes</ol>
     <h4>3.0.3</h4>
         <ol>Fix some bugs and make some improvements</ol>
         <ol>Add debug log</ol>

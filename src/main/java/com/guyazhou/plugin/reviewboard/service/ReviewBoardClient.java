@@ -377,7 +377,8 @@ public class ReviewBoardClient {
      * @return all repositories
      */
     public RepositoryResponse getRepositories() {
-        String path = apiURL + "repositories/";
+        // TODO Temporarily fix repositories issue
+        String path = apiURL + "repositories/?max-results=200";
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", this.getCookie());
