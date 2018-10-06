@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     id "java"
-    id "org.jetbrains.intellij" version "0.3.5"
+    id "org.jetbrains.intellij" version "0.3.11"
 }
 
 group 'com.guyazhou'

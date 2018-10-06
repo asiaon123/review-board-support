@@ -1,16 +1,15 @@
 package com.guyazhou.plugin.reviewboard.service;
 
 import com.google.gson.Gson;
-import com.guyazhou.plugin.reviewboard.http.HttpClient;
-import com.guyazhou.plugin.reviewboard.model.repository.RepositoryResponse;
-import com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.guyazhou.plugin.reviewboard.exceptions.IllegalSettingException;
+import com.guyazhou.plugin.reviewboard.http.HttpClient;
 import com.guyazhou.plugin.reviewboard.model.DiffVirtualFile;
 import com.guyazhou.plugin.reviewboard.model.Response;
 import com.guyazhou.plugin.reviewboard.model.ReviewParams;
 import com.guyazhou.plugin.reviewboard.model.draft.DraftResponse;
+import com.guyazhou.plugin.reviewboard.model.repository.RepositoryResponse;
 import com.guyazhou.plugin.reviewboard.model.review_request.ReviewRequestDraft;
-import com.guyazhou.plugin.reviewboard.utils.JsonUtil;
+import com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting;
 import com.intellij.openapi.progress.ProgressIndicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
