@@ -1,59 +1,22 @@
 <idea-plugin url="https://github.com/asiaon123/review-board-support">
     <id>com.guyazhou.tools.plugin.reviewboard</id>
     <name>Review Board Support</name>
-    <version>3.0</version>
     <category>TOOLS INTEGRATION</category>
     <vendor email="asiaon123@gmail.com" url="https://github.com/asiaon123/review-board-support">asiaon123</vendor>
-    <idea-version since-build="145.0"/>
 
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.vcs</depends>
     <depends>Subversion</depends>
     <depends>Git4Idea</depends>
 
-    <description><![CDATA[
-        <h4>Features</h4>
-        <ul>
-            <li>Support Subversion, Git</li>
-            <li>Auto review for some users@lvmama</li>
-        </ul>
-        <h4>About</h4>
-        <ul>
-            <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.adoc">Usage</a></li>
-            <li><a href="https://github.com/asiaon123/review-board-support/issues">Issues</a></li>
-        </ul>
-    ]]>
-    </description>
-
-    <change-notes><![CDATA[
-        <h4>2.0</h4>
-            <ol>
-                <li>Fix compability to jetbrains version of 2018</li>
-            </ol>
-        <h4>1.5</h4>
-            <ol>
-                <li>Add suppourt for Git</li>
-            </ol>
-        <h4>1.4</h4>
-            <ol>
-                <li>Archive 1.x</li>
-                <li>1.x only suppourt IDEA that version is less than 181.2218(2018)</li>
-                <li>Add image to commit action</li>
-            </ol>
-    ]]>
-    </change-notes>
-
     <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="My Sample Tool Window" icon="/icons/logo.png" anchor="bottom" factoryClass="com.guyazhou.plugin.reviewboard.toolswindow.ReviewPanelToolWindowFactory"/>
         <applicationService serviceImplementation="com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting"/>
         <applicationConfigurable instance="com.guyazhou.plugin.reviewboard.setting.ReviewBoardSetting"/>
     </extensions>
 
     <actions>
-        <action id="PreCommitAction"
-                class="com.guyazhou.plugin.reviewboard.actions.ReviewAction"
-                text="Pre-commit"
-                icon="/icons/logo.png"
-                description="Pre-commit a review request to review board server">
+        <action id="PreCommitAction" class="com.guyazhou.plugin.reviewboard.actions.ReviewAction" text="Pre-Commit" icon="/icons/logo.png" description="Pre-commit a review request to review board server">
             <add-to-group group-id="ChangesViewPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>

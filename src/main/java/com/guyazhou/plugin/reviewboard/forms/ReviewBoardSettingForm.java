@@ -22,8 +22,6 @@ public class ReviewBoardSettingForm {
     private JTextField groupsField;
     private JTextField peopleField;
     private JTextPane exampleServerURL;
-    private JTextPane exampleUsername;
-    private JTextPane examplePassword;
     private JTextPane exampleGroups;
     private JTextPane examplePeople;
     private JPanel AttributesPanel;

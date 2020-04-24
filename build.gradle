@@ -1,16 +1,17 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
     id "java"
-    id "org.jetbrains.intellij" version "0.3.11"
+    id "org.jetbrains.intellij" version "0.4.18"
 }
 
 group 'com.guyazhou'
 version '3.0.4'
+
+sourceCompatibility = 1.8   // Use jdk8 for compiling
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenCentral()
+}
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -21,9 +22,9 @@ dependencies {
 }
 
 intellij {
-    version = '2018.2'
-    plugins = ['coverage', 'Svn4Idea', 'Git4Idea']
     pluginName = 'review-board-support'
+    version = '2019.3.3'
+    plugins = ['coverage', 'svn4idea', 'git4idea']
 }
 
 patchPluginXml {
@@ -64,7 +65,16 @@ patchPluginXml {
         </ol>
       """
 
-    description = """
-        NOT AVAILABLE
+    pluginDescription = """
+        <h2>Features</h2>
+        <ul>
+            <li>Support Subversion, Git</li>
+            <li>Auto review for some users@lvmama</li>
+        </ul>
+        <h2>About</h2>
+        <ul>
+            <li><a href="https://github.com/asiaon123/review-board-support/blob/master/README.adoc">Usage</a></li>
+            <li><a href="https://github.com/asiaon123/review-board-support/issues">Issues</a></li>
+        </ul>
     """
 }

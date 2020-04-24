@@ -5,7 +5,6 @@ import com.guyazhou.plugin.reviewboard.exceptions.InvalidFileException;
 import com.guyazhou.plugin.reviewboard.i18n.MessageBundleUtil;
 import com.guyazhou.plugin.reviewboard.i18n.MessageProperties;
 import com.guyazhou.plugin.reviewboard.tasks.PrepareVcsInfoTask;
-import com.guyazhou.plugin.reviewboard.utils.JsonUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -17,6 +16,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class ReviewAction extends AnAction {
     private final Logger log = LoggerFactory.getLogger(ReviewAction.class);
 
     @Override
-    public void actionPerformed(AnActionEvent event) {
+    public void actionPerformed(@NotNull AnActionEvent event) {
 
         log.info("=================================================== Submit Review Start ===================================================");
 
